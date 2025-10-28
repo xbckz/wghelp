@@ -1,0 +1,1504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WG Helper</title>
+<style>
+
+@media (max-width: 800px) {
+  body {
+    background-attachment: scroll !important;
+    background-size: cover;
+  }
+}
+
+html,body {
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  width: 100%;
+  min-height: 100vh;
+  background-image: url('background.jpg');
+  background-repeat: repeat;
+  background-size: auto;
+  background-position: top left;
+  background-attachment: fixed;
+  overflow-x: hidden;
+  padding-bottom: 20px;
+  overscroll-behavior: none;
+  scroll-behavior: smooth;
+}
+
+.header-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: -20px;
+}
+
+.header_ext {
+  flex: 1;
+  height: 101px;
+  background-image: url('header_ext.jpg');
+  background-repeat: repeat-x;
+  background-size: contain;
+}
+
+.header {
+  width: 12%;        /* small on PC */
+  display: block;
+  object-fit: contain;
+}
+
+/* Mobile adjustments only */
+@media (max-width: 600px) {
+  .header {
+    width: 50%;   /* almost full width on phones */
+    height: auto;     /* scale height automatically */
+  }
+
+  .header_ext {
+    height: 107px;     /* reduce side extensions on mobile */
+  }
+
+  .header-text {
+    font-size: 1em;   /* smaller text on mobile */
+  }
+}
+
+
+.sheet-container {
+  display: grid;
+  grid-template-columns: 1fr; /* stack vertically */
+  grid-gap: 20px;
+  justify-items: start; /* align left instead of center */
+  max-width: 100%;       /* take up 90% of screen width */
+  margin: 0 auto 10px auto; /* auto horizontal centering within max-width */
+}
+
+
+.bordered {
+  position: relative;
+  width: 150px;
+  height: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.bordered img {
+  max-width: 90%;
+  max-height: 90%;
+  object-fit: contain;
+  transform: translateX(4px);
+  border-radius: 18px;
+}
+
+.bordered::after {
+  content: "";
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('border.png');
+  background-size: contain;   /* instead of cover */
+  background-repeat: no-repeat;
+  background-position: center;
+  pointer-events: none;
+}
+
+
+
+.listView {
+    width: 100vw; /* full screen width */
+    margin: 0 auto -21px auto;
+    padding: 0;
+    overflow-x: hidden; /* optional, prevents horizontal scroll */
+    border-top: 1px solid rgba(0,0,0,0.5);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.listView .listViewItem {
+    width: 100vw; /* full width */
+    padding: 10px 20px; /* inner spacing */
+    border-top: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(0,0,0,0.5);
+    background: rgba(0,0,0,0.3);
+    position: relative;
+    float: none; /* remove float */
+    clear: both;
+}
+
+.listView .listViewItem:nth-child(even) {
+    background: rgba(0,0,0,0.45);
+}
+
+
+.listView .listViewItem:nth-child(even) {
+    background: rgba(0,0,0,0.45);
+}
+.listView .listViewItem h4 {
+    font-size: 14px;
+    margin: 0 0 0px 0;
+    padding: 12px 0 7px 20px;
+    background-repeat: no-repeat;
+}
+dl.listViewItemDetails {
+    margin: 0 0 5px 0;
+}
+dl.listViewItemDetails dt {
+    width: 120px;
+    height: 120px;
+    margin: 0;
+    padding: 12px 9px 9px 17px;
+    float: left;
+    position: relative;
+}
+dl.listViewItemDetails dt .itemIcon {
+    width: 100%;
+    height: 100%;
+    background-color: #555;
+}
+dl.listViewItemDetails dd {
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+}
+dl.listViewItemDetails dd ul {
+    float: left;
+    position: relative;
+    top: 17px;
+}
+dl.listViewItemDetails dd li {
+    width: 119px;
+    padding: 5px 0 4px 27px;
+    position: relative;
+}
+
+.page-description {
+    width: 100%;
+    padding: 20px;
+    background: rgba(50, 50, 50, 0.8); /* subtle dark background */
+    color: #fff;
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+    box-sizing: border-box;
+}
+
+.page-description h2 {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    letter-spacing: 0.5px;
+}
+
+.page-description p {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.4;
+    color: #ddd;
+}
+
+.header-text {
+  position: absolute;
+  top: 9px;
+  width: 100%;
+  text-align: center;
+  font-size: 0.9em;
+  font-weight: normal;
+  color: white;
+  text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.button {
+    border: 1px solid #000;
+    border-top: none;
+    display: inline-flex;      /* change from inline-block to inline-flex */
+    align-items: center;       /* vertically center */
+    justify-content: center;   /* horizontally center */
+    text-decoration: none;
+    font: 13px "American Typewriter", serif;
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    padding: 10px 12px;
+    min-width: 70px;
+    border-radius: 4px;
+    background-color: hsl(35, 75%, 50%);
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, hsl(35, 75%, 60%)), color-stop(48%, hsl(35, 75%, 50%)), color-stop(52%, hsl(35, 75%, 30%)), color-stop(100%, hsl(13, 80%, 25%)));
+}
+
+
+.button:active,
+.button.active {
+    background-color: hsl(35, 75%, 60%);
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, hsl(35, 75%, 70%)), color-stop(48%, hsl(35, 75%, 60%)), color-stop(52%, hsl(35, 75%, 40%)), color-stop(100%, hsl(13, 80%, 35%)));
+}
+.button.premium {
+    background-color: #6ceddf;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #6ceddf), color-stop(48%, #17d6c2), color-stop(52%, #0d8074), color-stop(100%, #013a34));
+}
+.button.premium:active,
+.button.premium.active {
+    background-color: #75f0e2;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #75f0e2), color-stop(48%, #48dece), color-stop(52%, #41a398), color-stop(100%, #367a72));
+}
+
+/* marketing coupon button im News bereich startseite */
+li.gf button.coupon-button {
+    background-color: #006ab3;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, rgb(178, 224, 225)), color-stop(49%, rgb(0, 106, 179)), color-stop(51%, rgb(0, 73, 124)), color-stop(100%, rgb(0, 46, 76)));  
+}
+li.gf button.coupon-button.active,
+li.gf button.coupon-button:active {
+    background-color: #006ab3;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, rgb(178, 224, 225)), color-stop(49%, rgb(0, 106, 179)), color-stop(51%, rgb(0, 73, 124)), color-stop(100%, rgb(0, 46, 76)));  
+}
+
+.button span {
+    display: inline-block;
+    margin: -4px 0;
+    padding: 0 0 0 24px;
+    font-size: 14px;
+    line-height: 24px;
+}
+.btnEnergy span {
+    background-repeat: no-repeat;
+    background-position: 0 2px;
+}
+.btnFury span {
+    background-repeat: no-repeat;
+    background-position: 0 2px;
+}
+.btnIgnore span {
+    background-repeat: no-repeat;
+    background-position: 0 2px;
+    background-size: 20px;
+}
+.btnIgnore span.unignore {
+    background-repeat: no-repeat;
+    background-position: 0 -38px;
+    background-size: 20px;
+}
+.btnEnergy.btnDisabled span,
+.btnFury.btnDisabled span { background-position: 0 -48px; }
+
+.btnDisabled,
+.btnDisabled:active,
+.btnDisabled.active {
+    background-color: #999;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #d6d6d6), color-stop(49%, #3b3b3b), color-stop(51%, #000),  color-stop(100%, #545454));
+    color: rgba(255,255,255,0.6);
+    text-shadow: 0 1px 1px rgba(0,0,0,0.6);
+}
+
+/* ContentSection-Tabs */
+
+.tabsWrap {
+    display: table;
+    margin: 0 auto;
+    clear: both;
+}
+body#home .tabsOuter {
+    margin: 0 auto;
+    padding: 5px 0;
+    background: rgba(0,0,0,0.45);
+    border-top: 1px solid #000;
+}
+.tabs {
+    margin: 30px;
+    padding: 0;
+    list-style: none;
+    float: left;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    font-family: "American Typewriter", serif;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    background-color: hsl(50, 15%, 25%);
+    background: hsl(50, 15%, 25%) -webkit-gradient(linear, 0 0, 0 100%, from(hsl(50, 15%, 25%)), to(hsl(50, 15%, 15%)));
+}
+body#home .tabs { letter-spacing: -1px; }
+.tabs li {
+    display: block;
+    float: left;
+}
+.tabs a {
+    font-size: 12px;
+    display: block;
+    padding: 6px 5px;
+    border-left: 1px solid rgba(0,0,0,0.5);
+    border-right: 1px solid rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.5);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+body#quest .tabs a { max-width: 70px; }
+.tabs li:first-child a {
+    border-left: none;
+    -webkit-border-top-left-radius: 4px; -webkit-border-bottom-left-radius: 4px;
+    border-top-left-radius: 4px; border-bottom-left-radius: 4px;
+}
+.tabs li:last-child a {
+    border-right: none;
+    -webkit-border-top-right-radius: 4px; -webkit-border-bottom-right-radius: 4px;
+    border-top-right-radius: 4px; border-bottom-right-radius: 4px;
+}
+.tabs .active a {
+    color: #fff;
+    background-color: hsl(50, 15%, 40%);
+    background: hsl(50, 15%, 40%) -webkit-gradient(linear, 0 0, 0 100%, from(hsl(50, 15%, 40%)), to(hsl(50, 15%, 30%)));
+}
+.tabPanel {
+    clear: both;
+}
+
+.tabs a {
+    text-decoration: none; /* remove underline */
+}
+
+
+
+</style>
+</head>
+
+
+<body>
+
+<!-- Header -->
+<div class="header-text">Best Value Defense</div>
+<div class="header-row">
+  <div class="header_ext"></div>
+  <img src="header.jpg" alt="header" class="header">
+  <div class="header_ext"></div>
+</div>
+
+<div class="tabsOuter">
+  <div class="tabsWrap">
+    <ul class="tabs" id="main-tabs">
+      <li><a href="index.html" data-tab="income-calc">Home</a></li>
+      <li class="active"><a href="#" data-tab="defense-calc">Best Defense Calc</a></li>
+      <li><a href="best_value_income.html" data-tab="income-calc">Best Income Calc</a></li>
+      <li><a href="price_predict_def.html" data-tab="price-def">Price Predict (Defense)</a></li>
+      <li><a href="price_predict_inc.html" data-tab="price-income">Price Predict (Income)</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Tab Panels -->
+<div id="home" class="tabPanel" style="display: none;">
+</div>
+
+<div id="defense-calc" class="tabPanel" style="display: block;">
+</div>
+
+<div id="income-calc" class="tabPanel" style="display: none;">
+</div>
+
+<div id="price-def" class="tabPanel" style="display: none;">
+</div>
+
+<div id="price-income" class="tabPanel" style="display: none;">
+</div>
+
+<div class="page-description">
+    <h2>Best Value Defense Calculator</h2>
+    <p>Enter the amount of buildings you own, your budget, and get the most efficient plan for you.</p>
+
+    <!-- Toggle switch -->
+    <div class="toggle-wrapper" style="margin-top: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
+        <span>Show Buildings:</span>
+        <img id="sheet-toggle" src="success.png" alt="Toggle Buildings" style="width: 24px; height: 24px;">
+    </div>
+</div>
+
+<!-- Buildings Sheet -->
+<div class="sheet-container">
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Barbed Wire
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1.jpg" alt="Building 1" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-1" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>70</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-1"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Concrete Wall
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="2.jpg" alt="Building 2" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-2" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>100</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-2"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+    
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Small Cannon
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="3.jpg" alt="Building 3" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-3" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>135</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-3"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+    
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Watchtower
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="4.jpg" alt="Building 4" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-4" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>170</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-4"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+  
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Stationary Artillery
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="5.jpg" alt="Building 5" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-5" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>200</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-5"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+    
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Bunker
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="6.jpg" alt="Building 6" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-6" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>270</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-6"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+    
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Large Cannon
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="7.jpg" alt="Building 7" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-7" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>340</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-7"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+    
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Intelligent Laser Network
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="8.jpg" alt="Building 8" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-8" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>540</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-8"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+    
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Mine Belt
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="9.jpg" alt="Building 9" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-9" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>710</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-9"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+    
+
+    <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Ion Shield
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="10.jpg" alt="Building 10" style="width: 150px; height: 150px; object-fit: contain;">
+
+          <!-- Owned text -->
+          <span style="
+            position: absolute;
+            top: 90px;
+            right: -60px;
+            color: white;
+            font-size: 12px;
+          ">Owned:</span>
+
+          <!-- Editable Number Pole -->
+          <input 
+            id="owned-10" 
+            type="number" 
+            value="0"
+            min="0"
+            style="
+              position: absolute;
+              top: 110px;
+              right: -80px;
+              width: 60px;
+              height: 22px;
+              text-align: center;
+              font-size: 13px;
+              color: #000;
+              background: #fff;
+              border: 2px solid #ccc;
+              border-radius: 6px;
+              outline: none;
+            "
+          >
+        </div>
+
+        <!-- Stats images and defense text -->
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
+          <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+          <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+          <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+            <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+            <span style="color: white; font-size: 12px;">Defence: <strong>990</strong></span>
+          </div>
+
+          <!-- Unlocked text -->
+          <span style="
+            position: absolute;
+            top: 68px;
+            right: -20px;
+            color: white;
+            font-size: 12px;
+          ">Unlocked:</span>
+
+          <!-- Toggle Icon -->
+          <img 
+            id="unlock-10"
+            src="success.png"
+            alt="Unlocked Toggle"
+            style="
+              position: absolute;
+              top: 90px;
+              right: -5px;
+              width: 24px;
+              height: auto;
+              cursor: pointer;
+            "
+          >
+        </div>
+
+      </div>
+    </div>
+  </div>
+    </div>
+
+
+
+<div class="listView">
+  <!-- Budget Section -->
+  <div class="listViewItem" style="padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px;">
+    <div style="display: flex; align-items: center; gap: 5px;">
+      <!-- Money icon -->
+      <img src="money.png" alt="Money" style="width: 30px; height: 30px; border: none; background: transparent;">
+      <h4 style="color: white; margin: 0; font-size: 20px;">Set Your Budget</h4>
+    </div>
+
+    <div style="color: white; font-size: 13px; margin-left: 35px; margin-right: 30px;">
+      Enter your budget to calculate the best building plan. Dont forget to disable buildings you dont have unlocked yet! <br><br>
+      *Note that after making a calculation, the new values will be stored so you dont have to set the building numbers every time.
+    </div>
+
+    <dl class="listViewItemDetails" style="display: flex; flex-direction: column; gap: 10px; flex-wrap: wrap;">
+      <dd style="flex: 1;">
+        <ul style="padding: 0; margin: 0; list-style: none; display: flex; flex-direction: column; gap: 10px;">
+          <li style="color: white; display: flex; align-items: center; gap: 10px;">
+            <input 
+              id="budget" 
+              type="number" 
+              min="0" 
+             
+              placeholder="Enter budget"
+              style="
+                width: 150px;
+                height: 32px;
+                text-align: center;
+                font-size: 14px;
+                border-radius: 6px;
+                border: 2px solid #ccc;
+                outline: none;
+                background: #fff;
+                color: #000;
+              "
+            >
+            <button id="calculate" class="button" style="display: flex; align-items: center; justify-content: center; padding: 10px 12px;">
+    <span style="margin: 0; padding: 0;">Calculate</span>
+</button>
+
+          </li>
+        </ul>
+      </dd>
+    </dl>
+
+    <!-- Best Plan Section -->
+    <div id="best-plan" style="margin-top: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
+      <h4 style="color: white; margin-bottom: 10px; margin-left: -10px; font-size: 20px;">Best Plan</h4>
+      <div id="best-plan-content" style="color: white; margin-left: 10px;">
+        Your recommended buildings will appear here after setting the budget.
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<div class="tabsOuter">
+  <div class="tabsWrap">
+    <ul class="tabs" id="main-tabs">
+      <li><a href="index.html" data-tab="income-calc">Home</a></li>
+      <li class="active"><a href="#" data-tab="defense-calc">Best Defense Calc</a></li>
+      <li><a href="best_value_income.html" data-tab="income-calc">Best Income Calc</a></li>
+      <li><a href="price_predict_def.html" data-tab="price-def">Price Predict (Defense)</a></li>
+      <li><a href="price_predict_inc.html" data-tab="price-income">Price Predict (Income)</a></li>
+    </ul>
+  </div>
+</div>
+
+<!-- Tab Panels -->
+<div id="home" class="tabPanel" style="display: none;">
+</div>
+
+<div id="defense-calc" class="tabPanel" style="display: block;">
+</div>
+
+<div id="income-calc" class="tabPanel" style="display: none;">
+</div>
+
+<div id="price-def" class="tabPanel" style="display: none;">
+</div>
+
+<div id="price-income" class="tabPanel" style="display: none;">
+</div>
+
+
+</body>
+</html>
+
+<script src="def_calc.js"></script>
+
+</body>
+</html>
