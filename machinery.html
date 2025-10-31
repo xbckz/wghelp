@@ -317,7 +317,7 @@ body#quest .tabs a { max-width: 70px; }
 
 <div class="page-description">
     <h2>Machinery</h2>
-    <p>Info about all machinery troops, including their attack, defence, upkeep, and unlock level (coming soon).</p>
+    <p>Info about all machinery troops, including their attack, defence, upkeep, and unlock level (coming soon). Also includes war loot troops.</p>
 </div>
 
 <div class="sheet-container">
@@ -446,6 +446,21 @@ body#quest .tabs a { max-width: 70px; }
             </div>
           </div>
 
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="xp.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Unlock lvl: <span style="color: white;"><strong>???</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          
+
         </div>
 
       </div>
@@ -517,7 +532,7 @@ body#quest .tabs a { max-width: 70px; }
             <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
               <img src="xp.png" alt="Defense" style="width: 18px; height: auto;">
               <span style="color: white; font-size: 12px;">
-                  Unlock lvl: <span style="color: white;"><strong>4</strong></span>
+                  Unlock lvl: <span style="color: white;"><strong>???</strong></span>
               </span>
             </div>
           </div>
@@ -596,7 +611,7 @@ body#quest .tabs a { max-width: 70px; }
             <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
               <img src="xp.png" alt="Defense" style="width: 18px; height: auto;">
               <span style="color: white; font-size: 12px;">
-                  Unlock lvl: <span style="color: white;"><strong>7</strong></span>
+                  Unlock lvl: <span style="color: white;"><strong>???</strong></span>
               </span>
             </div>
           </div>
@@ -688,7 +703,7 @@ body#quest .tabs a { max-width: 70px; }
             <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
               <img src="xp.png" alt="Defense" style="width: 18px; height: auto;">
               <span style="color: white; font-size: 12px;">
-                  Unlock lvl: <span style="color: white;"><strong>9</strong></span>
+                  Unlock lvl: <span style="color: white;"><strong>???</strong></span>
               </span>
             </div>
           </div>
@@ -777,7 +792,7 @@ body#quest .tabs a { max-width: 70px; }
             <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
               <img src="xp.png" alt="Defense" style="width: 18px; height: auto;">
               <span style="color: white; font-size: 12px;">
-                  Unlock lvl: <span style="color: white;"><strong>11</strong></span>
+                  Unlock lvl: <span style="color: white;"><strong>???</strong></span>
               </span>
             </div>
           </div>
@@ -866,7 +881,7 @@ body#quest .tabs a { max-width: 70px; }
             <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
               <img src="xp.png" alt="Defense" style="width: 18px; height: auto;">
               <span style="color: white; font-size: 12px;">
-                  Unlock lvl: <span style="color: white;"><strong>13</strong></span>
+                  Unlock lvl: <span style="color: white;"><strong>???</strong></span>
               </span>
             </div>
           </div>
@@ -955,7 +970,7 @@ body#quest .tabs a { max-width: 70px; }
             <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
               <img src="xp.png" alt="Defense" style="width: 18px; height: auto;">
               <span style="color: white; font-size: 12px;">
-                  Unlock lvl: <span style="color: white;"><strong>15</strong></span>
+                  Unlock lvl: <span style="color: white;"><strong>???</strong></span>
               </span>
             </div>
           </div>
@@ -3369,7 +3384,1247 @@ body#quest .tabs a { max-width: 70px; }
     </div>
   </div>
     </div>
+
+<div class="page-description">
+    <h2> Special Machinery</h2>
+    <p>Troops that can only be optained via missions with a chance for war spoils. First info being area, number being cost of the mission.</p>
+</div>
     
+<div class="sheet-container">
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Fahd
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1501.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 22px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>7</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>3</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Africa 4</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          ERC 90 Sagaie
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1502.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>22</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>12</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>250</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Middle East 5</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          BMD-3
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1503.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>50</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>31</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>1,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Russia 18</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Leopard 2
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1504.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>82</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>39</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>5,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Asia 20</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Merkava
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1505.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>150</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>70</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>16,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Australia 13</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Independence
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1506.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>210</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>105</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>35,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Canada 50</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Typhoon SSGN
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1507.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>281</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>149</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>73,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Greenland 34</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Tesla Tank
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1508.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>328</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>165</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>100,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Kamchatka 19</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Python MBS
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1509.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>348</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>193</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>115,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>South Africa 18</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          M3KT Topol-M
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1510.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>401</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>197</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>135,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>South Africa 28</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Tesla Eel
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1511.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>444</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>199</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>170,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Fireland 23</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Mammoth Armour
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1512.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>450</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>210</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>245,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Antarctica 13</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Anti-Grav Armour
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1513.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>515</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>293</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>300,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Hawai</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class="listView">
+    <div class="listViewItem">
+      
+      <!-- Headline with text centered inside -->
+      <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
+        <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
+        <span style="
+          position: absolute;
+          top: 50%;
+          left: 10px;  
+          transform: translateY(-50%);
+          color: #fff;
+          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+          letter-spacing: 0.5px;
+          font-size: 14px;
+          white-space: nowrap;
+        ">
+          Floating Headquarters
+        </span>
+      </div>
+
+      <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
+        
+        <!-- Building image -->
+        <div class="bordered" style="position: relative;">
+          <img src="1514.jpg" alt="Building 1" style="width: 125px; height: 125px; object-fit: contain;">
+        </div>
+
+        <!-- Stats wrapper - contains TWO complete stat boxes stacked -->
+        <div style="display: flex; flex-direction: column; gap: 4px; margin-top: 15px;">
+          
+          <!-- First stats box -->
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="att.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Attack: <span style="color: white;"><strong>562</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+
+        <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="def.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Defence: <span style="color: white;"><strong>286</strong></span>
+              </span>
+            </div>
+          </div>
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="upkeep.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Upkeep: <span style="color: #E6A64C;"><strong>345,000</strong></span>
+              </span>
+            </div>
+          </div>
+
+
+          <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; position: relative;">
+            <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
+            <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
+
+            <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
+              <img src="loot.png" alt="Defense" style="width: 18px; height: auto;">
+              <span style="color: white; font-size: 12px;">
+                  Area: <span style="color: white;"><strong>Hawai</strong></span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
 
 <div class="tabsOuter">
   <div class="tabsWrap">
@@ -3382,7 +4637,3 @@ body#quest .tabs a { max-width: 70px; }
     </ul>
   </div>
 </div>
-
-
-
-
