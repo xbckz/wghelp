@@ -283,6 +283,87 @@ body#quest .tabs a { max-width: 70px; }
     color: #ddd;
 }
 
+.button {
+    border: 1px solid #000;
+    border-top: none;
+    display: inline-flex;      /* change from inline-block to inline-flex */
+    align-items: center;       /* vertically center */
+    justify-content: center;   /* horizontally center */
+    text-decoration: none;
+    font: 13px "American Typewriter", serif;
+    color: #fff;
+    text-shadow: 0 1px 1px #000;
+    padding: 10px 12px;
+    min-width: 70px;
+    border-radius: 4px;
+    background-color: hsl(35, 75%, 50%);
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, hsl(35, 75%, 60%)), color-stop(48%, hsl(35, 75%, 50%)), color-stop(52%, hsl(35, 75%, 30%)), color-stop(100%, hsl(13, 80%, 25%)));
+}
+
+
+.button:active,
+.button.active {
+    background-color: hsl(35, 75%, 60%);
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, hsl(35, 75%, 70%)), color-stop(48%, hsl(35, 75%, 60%)), color-stop(52%, hsl(35, 75%, 40%)), color-stop(100%, hsl(13, 80%, 35%)));
+}
+.button.premium {
+    background-color: #6ceddf;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #6ceddf), color-stop(48%, #17d6c2), color-stop(52%, #0d8074), color-stop(100%, #013a34));
+}
+.button.premium:active,
+.button.premium.active {
+    background-color: #75f0e2;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #75f0e2), color-stop(48%, #48dece), color-stop(52%, #41a398), color-stop(100%, #367a72));
+}
+
+/* marketing coupon button im News bereich startseite */
+li.gf button.coupon-button {
+    background-color: #006ab3;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, rgb(178, 224, 225)), color-stop(49%, rgb(0, 106, 179)), color-stop(51%, rgb(0, 73, 124)), color-stop(100%, rgb(0, 46, 76)));  
+}
+li.gf button.coupon-button.active,
+li.gf button.coupon-button:active {
+    background-color: #006ab3;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, rgb(178, 224, 225)), color-stop(49%, rgb(0, 106, 179)), color-stop(51%, rgb(0, 73, 124)), color-stop(100%, rgb(0, 46, 76)));  
+}
+
+.button span {
+    display: inline-block;
+    margin: -4px 0;
+    padding: 0 0 0 24px;
+    font-size: 14px;
+    line-height: 24px;
+}
+.btnEnergy span {
+    background-repeat: no-repeat;
+    background-position: 0 2px;
+}
+.btnFury span {
+    background-repeat: no-repeat;
+    background-position: 0 2px;
+}
+.btnIgnore span {
+    background-repeat: no-repeat;
+    background-position: 0 2px;
+    background-size: 20px;
+}
+.btnIgnore span.unignore {
+    background-repeat: no-repeat;
+    background-position: 0 -38px;
+    background-size: 20px;
+}
+.btnEnergy.btnDisabled span,
+.btnFury.btnDisabled span { background-position: 0 -48px; }
+
+.btnDisabled,
+.btnDisabled:active,
+.btnDisabled.active {
+    background-color: #999;
+    background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #d6d6d6), color-stop(49%, #3b3b3b), color-stop(51%, #000),  color-stop(100%, #545454));
+    color: rgba(255,255,255,0.6);
+    text-shadow: 0 1px 1px rgba(0,0,0,0.6);
+}
+
 </style>
 </head>
 
@@ -318,7 +399,16 @@ body#quest .tabs a { max-width: 70px; }
 <div class="page-description">
     <h2>Machinery</h2>
     <p>Info about all machinery troops, including their attack, defence, upkeep, and unlock level (coming soon). Also includes war loot troops.</p>
+    <button id="button", class="button", style="margin-top: 5px">Scroll to specials</button>
 </div>
+
+<script>
+document.getElementById("button").addEventListener("click", function() {
+  document.getElementById("target-section").scrollIntoView({
+    behavior: 'smooth'
+  });
+});
+</script>
 
 <div class="sheet-container">
   <div class="listView">
@@ -3370,6 +3460,9 @@ body#quest .tabs a { max-width: 70px; }
   </div>
     </div>
 
+<section id="target-section">
+</section>
+
 <div class="page-description">
     <h2> Special Machinery</h2>
     <p>Troops that can only be optained via missions with a chance for war spoils. First info being area, number being cost of the mission.</p>
@@ -4622,6 +4715,7 @@ body#quest .tabs a { max-width: 70px; }
     </ul>
   </div>
 </div>
+
 
 
 
