@@ -21,4 +21,3 @@ document.querySelectorAll('.menuItem > a.toggle').forEach(toggle => {
     if (arrow) arrow.src = isOpen ? 'arrow_down.png' : 'arrow.png';
   });
 });
-
