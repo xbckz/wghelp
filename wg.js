@@ -4,11 +4,12 @@ document.querySelectorAll('.menuItem > a.toggle').forEach(toggle => {
     const content = menuItem.querySelector('.menuContent');
     const arrow = this.querySelector('.menuArrow');
 
-    // Close all other open menus
+    // Close other open menus safely
     document.querySelectorAll('.menuItem').forEach(item => {
       if (item !== menuItem) {
         item.classList.remove('active');
-        item.querySelector('.menuContent').style.display = 'none';
+        const c = item.querySelector('.menuContent');
+        if (c) c.style.display = 'none'; // ✅ check before using
         const otherArrow = item.querySelector('.menuArrow');
         if (otherArrow) otherArrow.src = 'arrow.png';
       }
@@ -16,7 +17,7 @@ document.querySelectorAll('.menuItem > a.toggle').forEach(toggle => {
 
     // Toggle current one
     const isOpen = menuItem.classList.toggle('active');
-    content.style.display = isOpen ? 'block' : 'none';
+    if (content) content.style.display = isOpen ? 'block' : 'none'; 
     if (arrow) arrow.src = isOpen ? 'arrow_down.png' : 'arrow.png';
   });
 });
