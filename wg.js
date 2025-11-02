@@ -9,7 +9,7 @@ document.querySelectorAll('.menuItem > a.toggle').forEach(toggle => {
       if (item !== menuItem) {
         item.classList.remove('active');
         const c = item.querySelector('.menuContent');
-        if (c) c.style.display = 'none'; // ✅ check before using
+        if (c) c.style.display = 'none'; 
         const otherArrow = item.querySelector('.menuArrow');
         if (otherArrow) otherArrow.src = 'arrow.png';
       }
@@ -21,3 +21,4 @@ document.querySelectorAll('.menuItem > a.toggle').forEach(toggle => {
     if (arrow) arrow.src = isOpen ? 'arrow_down.png' : 'arrow.png';
   });
 });
+
