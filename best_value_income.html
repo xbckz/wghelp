@@ -15,7 +15,12 @@
   }
 }
 
-html,body {
+html {
+  margin: 0;
+  padding: 0;
+}
+
+body {
   margin: 0;
   padding: 0;
   background-color: #000;
@@ -76,26 +81,26 @@ body::after {
 
 @media (max-width: 600px) {
   .header {
-    width: 50%;   /* almost full width on phones */
-    height: auto;     /* scale height automatically */
+    width: 50%;
+    height: auto;
   }
 
   .header_ext {
-    height: 107px;     /* reduce side extensions on mobile */
+    height: 107px;
   }
 
   .header-text {
-    font-size: 1em;   /* smaller text on mobile */
+    font-size: 1em;
   }
 }
 
 .sheet-container {
   display: grid;
-  grid-template-columns: 1fr; /* stack vertically */
+  grid-template-columns: 1fr;
   grid-gap: 20px;
-  justify-items: start; /* align left instead of center */
-  max-width: 100%;       /* take up 90% of screen width */
-  margin: 0 auto 10px auto; /* auto horizontal centering within max-width */
+  justify-items: start;
+  max-width: 100%;
+  margin: 0 auto 10px auto;
 }
 
 
@@ -123,7 +128,7 @@ body::after {
   width: 100%;
   height: 100%;
   background-image: url('border.png');
-  background-size: contain;   /* instead of cover */
+  background-size: contain;
   background-repeat: no-repeat;
   background-position: center;
   pointer-events: none;
@@ -132,22 +137,22 @@ body::after {
 
 
 .listView {
-    width: 100vw; /* full screen width */
+    width: 100vw;
     margin: 0 auto -21px auto;
     padding: 0;
-    overflow-x: hidden; /* optional, prevents horizontal scroll */
+    overflow-x: hidden;
     border-top: 1px solid rgba(0,0,0,0.5);
     border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .listView .listViewItem {
-    width: 100vw; /* full width */
-    padding: 10px 20px; /* inner spacing */
+    width: 100vw;
+    padding: 10px 20px;
     border-top: 1px solid rgba(255,255,255,0.1);
     border-bottom: 1px solid rgba(0,0,0,0.5);
     background: rgba(0,0,0,0.3);
     position: relative;
-    float: none; /* remove float */
+    float: none;
     clear: both;
 }
 
@@ -155,10 +160,6 @@ body::after {
     background: rgba(0,0,0,0.45);
 }
 
-
-.listView .listViewItem:nth-child(even) {
-    background: rgba(0,0,0,0.45);
-}
 .listView .listViewItem h4 {
     font-size: 14px;
     margin: 0 0 0px 0;
@@ -200,7 +201,7 @@ dl.listViewItemDetails dd li {
 .page-description {
     width: 100%;
     padding: 20px;
-    background: rgba(50, 50, 50, 0.8); /* subtle dark background */
+    background: rgba(50, 50, 50, 0.8);
     color: #fff;
     font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
     box-sizing: border-box;
@@ -222,9 +223,9 @@ dl.listViewItemDetails dd li {
 .button {
     border: 1px solid #000;
     border-top: none;
-    display: inline-flex;      /* change from inline-block to inline-flex */
-    align-items: center;       /* vertically center */
-    justify-content: center;   /* horizontally center */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-decoration: none;
     font: 13px "American Typewriter", serif;
     color: #fff;
@@ -235,7 +236,6 @@ dl.listViewItemDetails dd li {
     background-color: hsl(35, 75%, 50%);
     background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, hsl(35, 75%, 60%)), color-stop(48%, hsl(35, 75%, 50%)), color-stop(52%, hsl(35, 75%, 30%)), color-stop(100%, hsl(13, 80%, 25%)));
 }
-
 
 .button:active,
 .button.active {
@@ -252,7 +252,6 @@ dl.listViewItemDetails dd li {
     background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, #75f0e2), color-stop(48%, #48dece), color-stop(52%, #41a398), color-stop(100%, #367a72));
 }
 
-/* marketing coupon button im News bereich startseite */
 li.gf button.coupon-button {
     background-color: #006ab3;
     background: -webkit-gradient(linear, 0 0, 0 100%, color-stop(0%, rgb(178, 224, 225)), color-stop(49%, rgb(0, 106, 179)), color-stop(51%, rgb(0, 73, 124)), color-stop(100%, rgb(0, 46, 76)));  
@@ -300,8 +299,6 @@ li.gf button.coupon-button:active {
     text-shadow: 0 1px 1px rgba(0,0,0,0.6);
 }
 
-/* ContentSection-Tabs */
-
 .tabsWrap {
     display: table;
     margin: 0 auto;
@@ -341,6 +338,7 @@ body#home .tabs { letter-spacing: -1px; }
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-decoration: none;
 }
 body#quest .tabs a { max-width: 70px; }
 .tabs li:first-child a {
@@ -362,13 +360,8 @@ body#quest .tabs a { max-width: 70px; }
     clear: both;
 }
 
-.tabs a {
-    text-decoration: none; /* remove underline */
-}
-
 </style>
 </head>
-
 
 <body>
 
@@ -392,27 +385,10 @@ body#quest .tabs a { max-width: 70px; }
   </div>
 </div>
 
-<!-- Tab Panels -->
-<div id="home" class="tabPanel" style="display: none;">
-</div>
-
-<div id="defense-calc" class="tabPanel" style="display: block;">
-</div>
-
-<div id="income-calc" class="tabPanel" style="display: none;">
-</div>
-
-<div id="price-def" class="tabPanel" style="display: none;">
-</div>
-
-<div id="price-income" class="tabPanel" style="display: none;">
-</div>
-
 <div class="page-description">
     <h2>Best Value Income Calculator</h2>
     <p>Enter the amount of buildings you own, your budget, and get the most efficient plan for you.</p>
 
-    <!-- Toggle switch -->
     <div class="toggle-wrapper" style="margin-top: 10px; display: flex; align-items: center; gap: 10px; cursor: pointer;">
         <span>Show Buildings:</span>
         <img id="sheet-toggle" src="success.png" alt="Toggle Buildings" style="width: 24px; height: 24px;">
@@ -423,1531 +399,399 @@ body#quest .tabs a { max-width: 70px; }
 <div class="sheet-container">
   <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Water Supply Well
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Water Supply Well</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="11.jpg" alt="Building 11" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-11" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-11" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>50</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>50</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-11"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-11" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
 
-
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Schools
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Schools</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="12.jpg" alt="Building 12" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-12" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-12" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>200</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>200</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-12"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-12" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
 
-    
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Water Supplies
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Water Supplies</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="13.jpg" alt="Building 13" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-13" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-13" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>1,000</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>1,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-13"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-13" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Sewage Disposal
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Sewage Disposal</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="14.jpg" alt="Building 14" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-14" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-14" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>4,500</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>4,500</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-14"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-14" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-  
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Streets
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Streets</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="15.jpg" alt="Building 15" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-15" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-15" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>11,000</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>11,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-15"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-15" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Petrol Stations
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Petrol Stations</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="16.jpg" alt="Building 16" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-16" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-16" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>14,500</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>14,500</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-16"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-16" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Electrical Supply
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Electrical Supply</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="17.jpg" alt="Building 17" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-17" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-17" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>60,000</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>60,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-17"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-17" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Broadcasting System
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Broadcasting System</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="18.jpg" alt="Building 18" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-18" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-18" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>110,000</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>110,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-18"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-18" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Warehousing
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Warehousing</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="19.jpg" alt="Building 19" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-19" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-19" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>150,000</strong></span>
-                </span>
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>150,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-19"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-19" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Healthcare System
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Healthcare System</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="20.jpg" alt="Building 20" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-20" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-20" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>275,000</strong></span>
-                </span>
-
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>275,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-20"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-20" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Broadband Internet
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Broadband Internet</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="21.jpg" alt="Building 21" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-21" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-21" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>375,000</strong></span>
-                </span>
-
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>375,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-21"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-21" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Underground Trains
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Underground Trains</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="22.jpg" alt="Building 22" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-22" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-22" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>500,000</strong></span>
-                </span>
-
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>500,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-22"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-22" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Biospheres
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Biospheres</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="23.jpg" alt="Building 23" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-23" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-23" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>1,250,000</strong></span>
-                </span>
-
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>1,250,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-23"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-23" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Underwater Farm
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Underwater Farm</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="24.jpg" alt="Building 24" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-24" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-24" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>2,000,000</strong></span>
-                </span>
-
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>2,000,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-24"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-24" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    
 
-    <div class="listView">
+  <div class="listView">
     <div class="listViewItem">
-      
-      <!-- Headline with text centered inside -->
       <div class="headline-wrapper" style="position: relative; display: flex; align-items: center; height: 34px; margin-bottom: -5px;">
         <img src="headline.png" alt="Headline" style="height: 34px; width: auto; display: block;">
-        <span style="
-          position: absolute;
-          top: 50%;
-          left: 10px;  
-          transform: translateY(-50%);
-          color: #fff;
-          font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
-          letter-spacing: 0.5px;
-          font-size: 14px;
-          white-space: nowrap;
-        ">
-          Deep Sea Power Station
-        </span>
+        <span style="position: absolute; top: 50%; left: 10px; transform: translateY(-50%); color: #fff; font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; letter-spacing: 0.5px; font-size: 14px; white-space: nowrap;">Deep Sea Power Station</span>
       </div>
-
       <div class="building-wrapper" style="display: flex; align-items: flex-start; margin-top: 10px; position: relative;">
-        
-        <!-- Building image -->
         <div class="bordered" style="position: relative;">
           <img src="25.jpg" alt="Building 25" style="width: 150px; height: 150px; object-fit: contain;">
-
-          <!-- Owned text -->
-          <span style="
-            position: absolute;
-            top: 90px;
-            right: -60px;
-            color: white;
-            font-size: 12px;
-          ">Owned:</span>
-
-          <!-- Editable Number Pole -->
-          <input 
-            id="owned-25" 
-            type="number" 
-            value="0"
-            min="0"
-            style="
-              position: absolute;
-              top: 110px;
-              right: -80px;
-              width: 60px;
-              height: 22px;
-              text-align: center;
-              font-size: 13px;
-              color: #000;
-              background: #fff;
-              border: 2px solid #ccc;
-              border-radius: 6px;
-              outline: none;
-            "
-          >
+          <span style="position: absolute; top: 90px; right: -60px; color: white; font-size: 12px;">Owned:</span>
+          <input id="owned-25" type="number" value="0" min="0" style="position: absolute; top: 110px; right: -80px; width: 60px; height: 22px; text-align: center; font-size: 13px; color: #000; background: #fff; border: 2px solid #ccc; border-radius: 6px; outline: none;">
         </div>
-
-        <!-- Stats images and defense text -->
         <div class="stats-wrapper" style="display: flex; flex-direction: column; align-items: flex-start; margin-top: 22px; position: relative;">
           <img src="stats.png" alt="Stats Top" style="width: 150px; height: auto;">
           <img src="stats_bot.png" alt="Stats Bottom" style="width: 150px; height: auto; margin-top: -14px;">
-
           <div style="position: absolute; top: 50%; left: 9px; transform: translateY(-50%); display: flex; align-items: center; gap: 5px;">
             <img src="income.png" alt="Defense" style="width: 18px; height: auto;">
-            <span style="color: white; font-size: 12px;">
-                Income: <span style="color: #E6A64C;"><strong>3,000,000</strong></span>
-                </span>
-
+            <span style="color: white; font-size: 12px;">Income: <span style="color: #E6A64C;"><strong>3,000,000</strong></span></span>
           </div>
-
-          <!-- Unlocked text -->
-          <span style="
-            position: absolute;
-            top: 68px;
-            right: -20px;
-            color: white;
-            font-size: 12px;
-          ">Unlocked:</span>
-
-          <!-- Toggle Icon -->
-          <img 
-            id="unlock-25"
-            src="success.png"
-            alt="Unlocked Toggle"
-            style="
-              position: absolute;
-              top: 90px;
-              right: -5px;
-              width: 24px;
-              height: auto;
-              cursor: pointer;
-            "
-          >
+          <span style="position: absolute; top: 68px; right: -20px; color: white; font-size: 12px;">Unlocked:</span>
+          <img id="unlock-25" src="success.png" alt="Unlocked Toggle" style="position: absolute; top: 90px; right: -5px; width: 24px; height: auto; cursor: pointer;">
         </div>
-
       </div>
     </div>
   </div>
-    </div>
+</div>
 
 
 <div class="listView">
-  <!-- Budget Section -->
   <div class="listViewItem" style="padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px;">
     <div style="display: flex; align-items: center; gap: 5px;">
-      <!-- Money icon -->
       <img src="money.png" alt="Money" style="width: 30px; height: 30px; border: none; background: transparent; margin-top: 10px;">
       <h4 style="color: white; margin: 0; font-size: 20px;">Set Your Budget</h4>
     </div>
@@ -1965,30 +809,17 @@ body#quest .tabs a { max-width: 70px; }
               id="budget" 
               type="number" 
               min="0" 
-            
               placeholder="Enter budget"
-              style="
-                width: 150px;
-                height: 32px;
-                text-align: center;
-                font-size: 14px;
-                border-radius: 6px;
-                border: 2px solid #ccc;
-                outline: none;
-                background: #fff;
-                color: #000;
-              "
+              style="width: 150px; height: 32px; text-align: center; font-size: 14px; border-radius: 6px; border: 2px solid #ccc; outline: none; background: #fff; color: #000;"
             >
             <button id="calculate" class="button" style="display: flex; align-items: center; justify-content: center; padding: 10px 12px;">
-    <span style="margin: 0; padding: 0;">Calculate</span>
-</button>
-
+              <span style="margin: 0; padding: 0;">Calculate</span>
+            </button>
           </li>
         </ul>
       </dd>
     </dl>
 
-    <!-- Best Plan Section -->
     <div id="best-plan" style="margin-top: 20px; padding: 10px; background: rgba(255,255,255,0.05); border-radius: 6px;">
       <h4 style="color: white; margin-bottom: 10px; margin-left: -10px; font-size: 20px;">Best Plan</h4>
       <div id="best-plan-content" style="color: white; margin-left: 10px;">
@@ -1998,40 +829,17 @@ body#quest .tabs a { max-width: 70px; }
   </div>
 </div>
 
-
-
-
 <div class="tabsOuter">
   <div class="tabsWrap">
-    <ul class="tabs" id="main-tabs">
-      <li><a href="index.html" data-tab="income-calc">Home</a></li>
-      <li><a href="best_value_defense.html" data-tab="defense-calc">Best Defense Calc</a></li>
-      <li class="active"><a href="#" data-tab="income-calc">Best Income Calc</a></li>
-      <li><a href="price_predict_def.html" data-tab="price-def">Price Predict (Defense)</a></li>
-      <li><a href="price_predict_inc.html" data-tab="price-income">Price Predict (Income)</a></li>
+    <ul class="tabs">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="best_value_defense.html">Best Defense Calc</a></li>
+      <li class="active"><a href="#">Best Income Calc</a></li>
+      <li><a href="price_predict_def.html">Price Predict (Defense)</a></li>
+      <li><a href="price_predict_inc.html">Price Predict (Income)</a></li>
     </ul>
   </div>
 </div>
-
-<!-- Tab Panels -->
-<div id="home" class="tabPanel" style="display: none;">
-</div>
-
-<div id="defense-calc" class="tabPanel" style="display: block;">
-</div>
-
-<div id="income-calc" class="tabPanel" style="display: none;">
-</div>
-
-<div id="price-def" class="tabPanel" style="display: none;">
-</div>
-
-<div id="price-income" class="tabPanel" style="display: none;">
-</div>
-
-
-</body>
-</html>
 
 <script src="inc_calc.js"></script>
 
