@@ -1,0 +1,108 @@
+/* Shared responsive and scrolling safeguards for every page. */
+html {
+  min-height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  width: 100%;
+  min-height: 100%;
+  height: auto !important;
+  margin: 0;
+  overflow-y: visible !important;
+  overflow-x: hidden;
+  overscroll-behavior-y: auto;
+  scroll-behavior: auto;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+img {
+  max-width: 100%;
+}
+
+/* 100vw plus horizontal padding was making list rows wider than phones. */
+.listView,
+.listView .listViewItem {
+  width: 100% !important;
+  max-width: 100%;
+}
+
+/* Keep the tab strip usable without making the page itself horizontally scroll. */
+.tabsOuter {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tabsWrap {
+  width: max-content;
+  min-width: 100%;
+}
+
+.tabs {
+  float: none !important;
+  display: flex;
+  width: max-content;
+  max-width: none;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.tabs li {
+  float: none !important;
+  flex: 0 0 auto;
+}
+
+.tabs a {
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.page-description {
+  overflow-wrap: anywhere;
+}
+
+.page-description h1,
+.page-description h2 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+@supports (overflow: clip) {
+  html {
+    overflow-x: clip;
+  }
+
+  body {
+    overflow-x: clip;
+  }
+}
+
+@media (max-width: 600px) {
+  .listView .listViewItem {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+
+  .tabs {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+
+  .tabs a {
+    padding: 10px 8px;
+    white-space: normal;
+  }
+}
