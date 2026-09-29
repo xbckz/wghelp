@@ -97,6 +97,19 @@ const defenseImages = defenses.reduce((acc, d, idx) => {
   return acc;
 }, {});
 
+function escapePredictDefenseHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function formatPredictDefenseCount(value) {
+  return Number(value || 0).toLocaleString();
+}
+
 document.getElementById("calculate")?.addEventListener("click", () => {
   const targetInput = document.getElementById("target-income");
   if (!targetInput) return;
@@ -107,6 +120,7 @@ document.getElementById("calculate")?.addEventListener("click", () => {
   defenses.forEach((d, i) => {
     d.owned = parseUserNumber(localStorage.getItem(`owned-${i + 1}`)) || 0;
     d.bought = 0;
+    d.totalSpent = 0;
     const unlocked = localStorage.getItem(`unlockState-${i + 1}`) || "locked";
     d.locked = unlocked !== "unlocked";
   });
@@ -139,6 +153,7 @@ document.getElementById("calculate")?.addEventListener("click", () => {
     const best = affordable.reduce((a, b) => a.value > b.value ? a : b);
 
     // "Buy" one
+    best.totalSpent += best.next_price;
     best.owned++;
     best.bought++;
     budget += best.next_price;
@@ -152,17 +167,21 @@ document.getElementById("calculate")?.addEventListener("click", () => {
   const boughtDefs = defenses.filter(d => d.bought > 0);
   let output = "";
 
+  defenses.forEach(d => {
+    d.next_price = d.base_price + d.delta * d.owned;
+  });
+
   if (boughtDefs.length) {
-    output += `<div style="display:grid; grid-template-columns: repeat(2, auto); gap:6px 8px; justify-content:start;">`;
-    boughtDefs.forEach(d => {
+    output += '<div class="best-plan-results"><div class="best-plan-grid">';
+    boughtDefs.forEach((d, index) => {
       output += `
-        <div style="background-color: rgba(0,0,0,0.3); border-radius:8px; padding:3px; width:85px; height:95px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-          <img src="${defenseImages[d.name]}" style="width:58px; height:58px; object-fit:contain; margin-bottom:3px;" />
-          <span style="color:white; font-size:12px; font-weight:bold;">${d.bought}x</span>
-        </div>
+        <button type="button" class="best-plan-card" data-defense-result-index="${index}" aria-label="Show stats for ${escapePredictDefenseHtml(d.name)}" aria-expanded="false">
+          <img src="${defenseImages[d.name]}" alt="${escapePredictDefenseHtml(d.name)}" class="best-plan-image" />
+          <span class="best-plan-quantity">× ${formatPredictDefenseCount(d.bought)}</span>
+        </button>
       `;
     });
-    output += `</div>`;
+    output += '</div><div id="predict-defense-detail" class="best-plan-detail" hidden aria-live="polite"></div></div>';
   } else {
     output += `<p style="color:white;">No additional defenses needed.</p>`;
   }
@@ -183,19 +202,61 @@ document.getElementById("calculate")?.addEventListener("click", () => {
   `;
 
   resDiv.innerHTML = output;
-});
 
+  const detail = document.getElementById('predict-defense-detail');
+  if (!detail) return;
 
-const calcBtn = document.getElementById("calculate");
-if (calcBtn) {
-  calcBtn.addEventListener("click", () => {
-    const targetIncome = parseUserNumber(document.getElementById("target-income").value) || 0;
-    const result = simulatePredict(targetIncome);
-    renderPrediction(result);
+  const showDefenseDetails = card => {
+    const defense = boughtDefs[Number(card.dataset.defenseResultIndex)];
+    if (!defense) return;
+    detail.innerHTML = `
+      <h5>${escapePredictDefenseHtml(defense.name)}</h5>
+      <ul>
+        <li>Defensive strength: ${formatPredictDefenseCount(defense.def_points)}</li>
+        <li>Next purchase price: ${formatPredictDefenseCount(defense.next_price)}</li>
+        <li>Quantity: ${formatPredictDefenseCount(defense.bought)}x</li>
+        <li>Total defense added: ${formatPredictDefenseCount(defense.bought * defense.def_points)}</li>
+        <li>Total spent: ${formatPredictDefenseCount(defense.totalSpent)}</li>
+      </ul>
+    `;
+    detail.hidden = false;
+    detail.setAttribute('aria-hidden', 'false');
+    resDiv.querySelectorAll('.best-plan-card').forEach(other => {
+      other.setAttribute('aria-pressed', other === card ? 'true' : 'false');
+      other.setAttribute('aria-expanded', other === card ? 'true' : 'false');
+    });
+
+    const resultsRoot = detail.closest('.best-plan-results');
+    if (!resultsRoot) return;
+    const rootRect = resultsRoot.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const gap = 10;
+    const detailWidth = detail.offsetWidth;
+    const rootWidth = resultsRoot.clientWidth;
+    const rightPosition = cardRect.right - rootRect.left + gap;
+    const leftPosition = cardRect.left - rootRect.left - detailWidth - gap;
+    let left = rightPosition;
+    let top = cardRect.top - rootRect.top + 6;
+    if (rightPosition + detailWidth > rootWidth && leftPosition >= 0) {
+      left = leftPosition;
+    } else if (rightPosition + detailWidth > rootWidth) {
+      left = Math.max(0, Math.min(cardRect.left - rootRect.left, rootWidth - detailWidth));
+      top = cardRect.bottom - rootRect.top + 8;
+    }
+    detail.style.left = `${Math.round(left)}px`;
+    detail.style.top = `${Math.round(top)}px`;
+  };
+
+  resDiv.querySelectorAll('.best-plan-card').forEach(card => {
+    card.addEventListener('click', () => showDefenseDetails(card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showDefenseDetails(card);
+      }
+    });
   });
-} else {
-  console.warn("Calculate button (#calculate) not found in DOM.");
-}
+});
 
 function updateCurrentDefense() {
   const currentDefense = defenses.reduce((sum, d, i) => {

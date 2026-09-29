@@ -103,6 +103,19 @@ const incomeImages = incomes.reduce((acc, b, idx) => {
   return acc;
 }, {});
 
+function escapeIncomeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function formatIncomeCount(value) {
+  return Number(value || 0).toLocaleString();
+}
+
 // === Calculate button logic ===
 document.getElementById("calculate").addEventListener("click", () => {
   let budget = parseUserNumber(document.getElementById("budget").value) || 0;
@@ -111,6 +124,7 @@ document.getElementById("calculate").addEventListener("click", () => {
   incomes.forEach((b, i) => {
     b.owned = parseUserNumber(localStorage.getItem(`owned-${i + 11}`)) || 0;
     b.bought = 0;
+    b.totalSpent = 0;
 
     const unlocked = localStorage.getItem(`unlockState-${i + 11}`) || "locked";
     b.locked = unlocked !== "unlocked";
@@ -128,9 +142,14 @@ document.getElementById("calculate").addEventListener("click", () => {
 
     const best = affordable.reduce((a, b) => a.value > b.value ? a : b);
     budget -= best.next_price;
+    best.totalSpent += best.next_price;
     best.owned++;
     best.bought++;
   }
+
+  incomes.forEach(b => {
+    b.next_price = b.base_price + b.delta * b.owned;
+  });
 
   // Save owned values & update inputs
   incomes.forEach((b, i) => {
@@ -147,16 +166,16 @@ document.getElementById("calculate").addEventListener("click", () => {
   let output = "";
 
   if (boughtIncomes.length > 0) {
-    output += `<div style="display:grid; grid-template-columns: repeat(2, auto); gap:6px 8px; justify-content:start;">`;
-    boughtIncomes.forEach(b => {
+    output += '<div class="best-plan-results"><div class="best-plan-grid">';
+    boughtIncomes.forEach((b, index) => {
       output += `
-        <div style="background-color: rgba(0,0,0,0.3); border-radius:8px; padding:3px; width:85px; height:95px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-          <img src="${incomeImages[b.name]}" style="width:58px; height:58px; object-fit:contain; margin-bottom:3px;" />
-          <span style="color:white; font-size:12px; font-weight:bold;">${b.bought}x</span>
-        </div>
+        <button type="button" class="best-plan-card" data-income-result-index="${index}" aria-label="Show stats for ${escapeIncomeHtml(b.name)}" aria-expanded="false">
+          <img src="${incomeImages[b.name]}" alt="${escapeIncomeHtml(b.name)}" class="best-plan-image" />
+          <span class="best-plan-quantity">× ${formatIncomeCount(b.bought)}</span>
+        </button>
       `;
     });
-    output += `</div>`;
+    output += '</div><div id="best-income-detail" class="best-plan-detail" hidden aria-live="polite"></div></div>';
   } else {
     output += `<p style="color:white;">No buildings can be bought with this budget.</p>`;
   }
@@ -185,4 +204,58 @@ document.getElementById("calculate").addEventListener("click", () => {
   `;
 
   resDiv.innerHTML = output;
+
+  const detail = document.getElementById('best-income-detail');
+  if (!detail) return;
+
+  const showIncomeDetails = card => {
+    const building = boughtIncomes[Number(card.dataset.incomeResultIndex)];
+    if (!building) return;
+    detail.innerHTML = `
+      <h5>${escapeIncomeHtml(building.name)}</h5>
+      <ul>
+        <li>Income per building: ${formatIncomeCount(building.income)}</li>
+        <li>Next purchase price: ${formatIncomeCount(building.next_price)}</li>
+        <li>Quantity: ${formatIncomeCount(building.bought)}x</li>
+        <li>Total income added: ${formatIncomeCount(building.bought * building.income)}</li>
+        <li>Total spent: ${formatIncomeCount(building.totalSpent)}</li>
+      </ul>
+    `;
+    detail.hidden = false;
+    detail.setAttribute('aria-hidden', 'false');
+    resDiv.querySelectorAll('.best-plan-card').forEach(other => {
+      other.setAttribute('aria-pressed', other === card ? 'true' : 'false');
+      other.setAttribute('aria-expanded', other === card ? 'true' : 'false');
+    });
+
+    const resultsRoot = detail.closest('.best-plan-results');
+    if (!resultsRoot) return;
+    const rootRect = resultsRoot.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const gap = 10;
+    const detailWidth = detail.offsetWidth;
+    const rootWidth = resultsRoot.clientWidth;
+    const rightPosition = cardRect.right - rootRect.left + gap;
+    const leftPosition = cardRect.left - rootRect.left - detailWidth - gap;
+    let left = rightPosition;
+    let top = cardRect.top - rootRect.top + 6;
+    if (rightPosition + detailWidth > rootWidth && leftPosition >= 0) {
+      left = leftPosition;
+    } else if (rightPosition + detailWidth > rootWidth) {
+      left = Math.max(0, Math.min(cardRect.left - rootRect.left, rootWidth - detailWidth));
+      top = cardRect.bottom - rootRect.top + 8;
+    }
+    detail.style.left = `${Math.round(left)}px`;
+    detail.style.top = `${Math.round(top)}px`;
+  };
+
+  resDiv.querySelectorAll('.best-plan-card').forEach(card => {
+    card.addEventListener('click', () => showIncomeDetails(card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showIncomeDetails(card);
+      }
+    });
+  });
 });

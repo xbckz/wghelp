@@ -24,6 +24,19 @@ const incomeImages = incomes.reduce((acc, b, idx) => {
   return acc;
 }, {});
 
+function escapePredictIncomeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function formatPredictIncomeCount(value) {
+  return Number(value || 0).toLocaleString();
+}
+
 function readSavedOwned() {
   return incomes.map((b, i) => {
     const stored = localStorage.getItem(`owned-${i + 11}`);
@@ -41,7 +54,8 @@ function simulatePredict(targetIncome, bonusPercent) {
     delta: b.delta,
     income: b.income,
     owned: savedOwned[i] || 0,
-    bought: 0
+    bought: 0,
+    totalSpent: 0
   }));
 
   const currentIncomeNoBonus = working.reduce((s, w) => s + w.income * w.owned, 0);
@@ -71,12 +85,17 @@ function simulatePredict(targetIncome, bonusPercent) {
 
     const best = working.reduce((a, b) => (a.value > b.value ? a : b));
     totalCost += best.next_price;
+    best.totalSpent += best.next_price;
     best.owned++;
     best.bought++;
     neededIncome -= best.income * bonusMultiplier;
 
     if (!isFinite(totalCost) || totalCost > 1e18) break;
   }
+
+  working.forEach(w => {
+    w.next_price = w.base_price + w.delta * w.owned;
+  });
 
   const boughtList = working.filter(w => w.bought > 0);
   const totalNew = working.reduce((s, w) => s + (w.bought || 0) * w.income, 0);
@@ -109,17 +128,17 @@ function renderPrediction(result) {
   let output = "";
 
   if (bought.length > 0) {
-    output += `<div style="display:grid; grid-template-columns: repeat(2, auto); gap:6px 8px; justify-content:start;">`;
-    bought.forEach(b => {
+    output += '<div class="best-plan-results"><div class="best-plan-grid">';
+    bought.forEach((b, index) => {
       const img = incomeImages[b.name] || "11.jpg";
       output += `
-        <div style="background-color: rgba(0,0,0,0.3); border-radius:8px; padding:3px; width:85px; height:95px; display:flex; flex-direction:column; align-items:center; justify-content:center;">
-          <img src="${img}" alt="${b.name}" style="width:58px; height:58px; object-fit:contain; margin-bottom:3px;">
-          <span style="color:white; font-size:12px; font-weight:bold;">${b.bought}x</span>
-        </div>
+        <button type="button" class="best-plan-card" data-income-result-index="${index}" aria-label="Show stats for ${escapePredictIncomeHtml(b.name)}" aria-expanded="false">
+          <img src="${img}" alt="${escapePredictIncomeHtml(b.name)}" class="best-plan-image">
+          <span class="best-plan-quantity">× ${formatPredictIncomeCount(b.bought)}</span>
+        </button>
       `;
     });
-    output += `</div>`;
+    output += '</div><div id="predict-income-detail" class="best-plan-detail" hidden aria-live="polite"></div></div>';
   } else {
     output += `<p style="color:white;">No buildings need buying to reach target.</p>`;
   }
@@ -156,6 +175,60 @@ function renderPrediction(result) {
   `;
 
   resDiv.innerHTML = output;
+
+  const detail = document.getElementById('predict-income-detail');
+  if (!detail) return;
+
+  const showIncomeDetails = card => {
+    const building = bought[Number(card.dataset.incomeResultIndex)];
+    if (!building) return;
+    detail.innerHTML = `
+      <h5>${escapePredictIncomeHtml(building.name)}</h5>
+      <ul>
+        <li>Income per building: ${formatPredictIncomeCount(building.income)}</li>
+        <li>Next purchase price: ${formatPredictIncomeCount(building.next_price)}</li>
+        <li>Quantity: ${formatPredictIncomeCount(building.bought)}x</li>
+        <li>Total income added: ${formatPredictIncomeCount(building.bought * building.income)}</li>
+        <li>Total spent: ${formatPredictIncomeCount(building.totalSpent)}</li>
+      </ul>
+    `;
+    detail.hidden = false;
+    detail.setAttribute('aria-hidden', 'false');
+    resDiv.querySelectorAll('.best-plan-card').forEach(other => {
+      other.setAttribute('aria-pressed', other === card ? 'true' : 'false');
+      other.setAttribute('aria-expanded', other === card ? 'true' : 'false');
+    });
+
+    const resultsRoot = detail.closest('.best-plan-results');
+    if (!resultsRoot) return;
+    const rootRect = resultsRoot.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const gap = 10;
+    const detailWidth = detail.offsetWidth;
+    const rootWidth = resultsRoot.clientWidth;
+    const rightPosition = cardRect.right - rootRect.left + gap;
+    const leftPosition = cardRect.left - rootRect.left - detailWidth - gap;
+    let left = rightPosition;
+    let top = cardRect.top - rootRect.top + 6;
+    if (rightPosition + detailWidth > rootWidth && leftPosition >= 0) {
+      left = leftPosition;
+    } else if (rightPosition + detailWidth > rootWidth) {
+      left = Math.max(0, Math.min(cardRect.left - rootRect.left, rootWidth - detailWidth));
+      top = cardRect.bottom - rootRect.top + 8;
+    }
+    detail.style.left = `${Math.round(left)}px`;
+    detail.style.top = `${Math.round(top)}px`;
+  };
+
+  resDiv.querySelectorAll('.best-plan-card').forEach(card => {
+    card.addEventListener('click', () => showIncomeDetails(card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showIncomeDetails(card);
+      }
+    });
+  });
 }
 
 // hook up calculate button

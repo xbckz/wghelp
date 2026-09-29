@@ -741,7 +741,6 @@ function displayResults(result) {
           <button type="button" class="best-army-unit-card" data-best-army-unit-index="${index}" aria-label="Show stats for ${escapeHtml(unit.name)}" aria-expanded="false">
             <img src="${imgSrc}" alt="${escapeHtml(unit.name)}" class="best-army-unit-image" />
             <span class="best-army-unit-quantity">× ${formatNumber(unit.quantity)}</span>
-            <span class="best-army-unit-name">${escapeHtml(unit.name)}</span>
           </button>
         `;
       });
@@ -849,7 +848,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('best_army.js?v=20260929-3');
+    worker = new Worker('best_army.js?v=20260930-1');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;

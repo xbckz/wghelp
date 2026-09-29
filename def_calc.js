@@ -146,6 +146,10 @@ document.getElementById("calculate").addEventListener("click", () => {
     best.bought++;
   }
 
+  defenses.forEach(d => {
+    d.next_price = d.base_price + d.delta * d.owned;
+  });
+
   // Save owned values and update inputs live
 defenses.forEach((d, i) => {
   localStorage.setItem(`owned-${i+1}`, d.owned);
@@ -171,10 +175,9 @@ defenses.forEach((d, i) => {
 
     boughtDefenses.forEach((d, index) => {
       output += `
-        <button type="button" class="best-plan-card" data-defense-result-index="${index}" aria-label="Show stats for ${escapeDefenseHtml(d.name)}">
+        <button type="button" class="best-plan-card" data-defense-result-index="${index}" aria-label="Show stats for ${escapeDefenseHtml(d.name)}" aria-expanded="false">
           <img src="${imgSrcPrefix}${d.imgId}.jpg" alt="${escapeDefenseHtml(d.name)}" class="best-plan-image" />
           <span class="best-plan-quantity">× ${formatDefenseCount(d.bought)}</span>
-          <span class="best-plan-name">${escapeDefenseHtml(d.name)}</span>
         </button>
       `;
     });

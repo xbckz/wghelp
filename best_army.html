@@ -359,8 +359,7 @@ body#home .tabsOuter {
     object-fit: cover;
 }
 
-.best-army-unit-quantity,
-.best-army-unit-name {
+.best-army-unit-quantity {
     display: block;
     width: 100%;
     box-sizing: border-box;
@@ -375,15 +374,6 @@ body#home .tabsOuter {
     font-size: 13px;
     font-weight: bold;
     line-height: 16px;
-}
-
-.best-army-unit-name {
-    min-height: 22px;
-    padding: 2px 2px 4px;
-    color: #fff;
-    background: rgba(55,55,55,0.96);
-    font-size: 11px;
-    line-height: 13px;
 }
 
 .best-army-unit-detail {
@@ -436,7 +426,7 @@ body#home .tabsOuter {
     }
 }
 </style>
-<link rel="stylesheet" href="site-fixes.css?v=20260929-2">
+<link rel="stylesheet" href="site-fixes.css?v=20260930-1">
 </head>
 <body>
 
@@ -463,7 +453,7 @@ body#home .tabsOuter {
 
 <div class="page-description">
     <h1>Best Army Calculator</h1>
-    <p>Find the strongest integer army for one shared hourly upkeep budget. The calculator applies the game's level-based alliance cap and optimizes attack, defense, or both across infantry, machinery and aeroplanes. War-loot specials and premium bonuses are not included because they are not level-unlocked troops.</p>
+    <p>Find the best army for you based on your level, upkeep, alliance size and the army goal.</p>
 </div>
 
 <div class="listView">
@@ -504,7 +494,7 @@ body#home .tabsOuter {
     </div>
 
     <div class="results-section" id="results" style="display: none;">
-      <h4>Exact Best Army</h4>
+      <h4>Best Army</h4>
       <div id="results-content"></div>
     </div>
 
@@ -525,7 +515,7 @@ body#home .tabsOuter {
 </div>
 
 <script src="number-format.js"></script>
-<script src="best_army.js?v=20260929-3"></script>
+<script src="best_army.js?v=20260930-1"></script>
 
 </body>
 </html>

@@ -23,6 +23,12 @@ body {
   box-sizing: border-box;
 }
 
+/* The legacy header used a negative bottom margin that put the first tools
+   bar inside the frame. Keep both tools bars in normal flow at every width. */
+.header-row {
+  margin-bottom: 0 !important;
+}
+
 img {
   max-width: 100%;
 }
@@ -189,8 +195,7 @@ img {
   object-fit: cover;
 }
 
-.best-plan-quantity,
-.best-plan-name {
+.best-plan-quantity {
   display: block;
   width: 100%;
   box-sizing: border-box;
@@ -205,15 +210,6 @@ img {
   font-size: 13px;
   font-weight: bold;
   line-height: 16px;
-}
-
-.best-plan-name {
-  min-height: 22px;
-  padding: 2px 2px 4px;
-  color: #fff;
-  background: rgba(55,55,55,0.96);
-  font-size: 11px;
-  line-height: 13px;
 }
 
 .best-plan-detail {
