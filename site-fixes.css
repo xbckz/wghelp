@@ -29,6 +29,12 @@ body {
   margin-bottom: 0 !important;
 }
 
+.header-row + .tabsOuter {
+  clear: both;
+  position: relative;
+  z-index: 2;
+}
+
 img {
   max-width: 100%;
 }

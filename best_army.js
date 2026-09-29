@@ -721,8 +721,6 @@ function displayResults(result) {
   // Keep the result cards in the same grouped order as the game troop pages.
   if (result.army.length > 0) {
     html += '<div class="best-army-units" id="best-army-units">';
-    html += '<h4 class="best-army-units-heading">Units</h4>';
-
     UNIT_TYPE_LABELS && Object.values(UNIT_TYPE_LABELS).forEach(typeLabel => {
       const units = result.army
         .map((unit, index) => ({ unit, index }))
@@ -848,7 +846,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('best_army.js?v=20260930-1');
+    worker = new Worker('best_army.js?v=20260930-2');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;
@@ -888,15 +886,27 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
 } else {
   let activeWorker = null;
   const calculateButton = document.getElementById('calculate');
+  const levelInput = document.getElementById('player-level');
+
+  if (levelInput) {
+    levelInput.addEventListener('input', () => {
+      const enteredLevel = parseArmyNumber(levelInput.value);
+      if (Number.isFinite(enteredLevel) && enteredLevel > 350) {
+        levelInput.value = '350';
+      }
+    });
+  }
 
   calculateButton.addEventListener('click', function() {
-    const playerLevel = Math.floor(parseArmyNumber(document.getElementById('player-level').value) || 0);
+    const enteredLevel = parseArmyNumber(levelInput.value) || 0;
+    const playerLevel = Math.min(350, Math.floor(enteredLevel));
+    if (enteredLevel > 350) levelInput.value = '350';
     const upkeepBudget = Math.floor(parseArmyNumber(document.getElementById('upkeep-budget').value) || 0);
     const allianceSize = Math.floor(parseArmyNumber(document.getElementById('alliance-size').value) || 0);
     const optimizeType = document.getElementById('optimize-type').value;
     const unitTypeFilter = 'all';
 
-    if (playerLevel <= 0 || playerLevel > 350) {
+    if (playerLevel <= 0) {
       alert('Please enter a valid player level (1-350).');
       return;
     }
