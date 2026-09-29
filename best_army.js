@@ -268,15 +268,93 @@ function seedSearch(items, slotLimits, budget) {
 // one shared upkeep budget. The upper bound is deliberately conservative:
 // one bound ignores slot limits, another ignores the budget, and their minimum
 // is still guaranteed to be at least as large as every feasible completion.
-function optimizeArmyItems(items, slotLimits, budget, options = {}) {
-  const bestSeed = seedSearch(items, slotLimits, budget);
+function optimizeArmyItems(items, slotLimits, budget) {
+  const originalItems = items;
+  const bestSeed = seedSearch(originalItems, slotLimits, budget);
   let bestValue = bestSeed.value;
   let bestCounts = bestSeed.counts;
-  const currentCounts = Array(items.length).fill(0);
   const categories = Object.keys(slotLimits).filter(type => UNIT_TYPES.includes(type));
   let nodesVisited = 0;
-  let searchAborted = false;
-  const deadline = Number.isFinite(options.deadline) ? options.deadline : 0;
+
+  // A Lagrangian relaxation gives a valid integer upper bound. Items whose
+  // relaxation loss is already too large to beat the incumbent can be removed
+  // before the exhaustive search, while the incumbent itself is preserved.
+  const categoryTypes = UNIT_TYPES.filter(type => slotLimits[type] > 0);
+  const maxDensity = originalItems.reduce(
+    (max, item) => Math.max(max, item.ratio),
+    0
+  );
+  const lagrangianAt = lambda => {
+    let bound = lambda * budget;
+    const maxNetByType = Object.fromEntries(
+      categoryTypes.map(type => [type, 0])
+    );
+    const selectedCostByType = Object.fromEntries(
+      categoryTypes.map(type => [type, 0])
+    );
+
+    for (const item of originalItems) {
+      const netValue = item.value - lambda * item.cost;
+      if (netValue > maxNetByType[item.type]) {
+        maxNetByType[item.type] = netValue;
+        selectedCostByType[item.type] = item.cost;
+      }
+    }
+
+    for (const type of categoryTypes) {
+      bound += slotLimits[type] * maxNetByType[type];
+    }
+    return { bound, maxNetByType, selectedCostByType };
+  };
+
+  let lambdaLow = 0;
+  let lambdaHigh = maxDensity;
+  for (let iteration = 0; iteration < 60; iteration += 1) {
+    const lambda = (lambdaLow + lambdaHigh) / 2;
+    const dual = lagrangianAt(lambda);
+    const selectedCost = categoryTypes.reduce(
+      (sum, type) => sum + slotLimits[type] * dual.selectedCostByType[type],
+      0
+    );
+    if (budget > selectedCost) lambdaHigh = lambda;
+    else lambdaLow = lambda;
+  }
+
+  const lowDual = lagrangianAt(lambdaLow);
+  const highDual = lagrangianAt(lambdaHigh);
+  const lambda = lowDual.bound <= highDual.bound ? lambdaLow : lambdaHigh;
+  const dual = lowDual.bound <= highDual.bound ? lowDual : highDual;
+  const improvementGap = dual.bound - bestValue;
+
+  // The objective is integral. If the upper bound rounds down to the
+  // incumbent, the incumbent is already proven optimal.
+  if (Math.floor(dual.bound + 1e-9) <= bestValue) {
+    return { value: bestValue, counts: bestCounts, nodesVisited: 0, exact: true };
+  }
+
+  const keepIndexes = [];
+  for (let index = 0; index < originalItems.length; index += 1) {
+    const item = originalItems[index];
+    const loss = dual.maxNetByType[item.type]
+      - (item.value - lambda * item.cost);
+    if ((bestSeed.counts[index] || 0) > 0 || loss < improvementGap - 1e-9) {
+      keepIndexes.push(index);
+    }
+  }
+
+  items = keepIndexes.map(index => originalItems[index]);
+  bestCounts = keepIndexes.map(index => bestSeed.counts[index] || 0);
+  const itemLosses = items.map(item => (
+    dual.maxNetByType[item.type] - (item.value - lambda * item.cost)
+  ));
+  const expandCounts = counts => {
+    const expanded = Array(originalItems.length).fill(0);
+    keepIndexes.forEach((originalIndex, compactIndex) => {
+      expanded[originalIndex] = counts[compactIndex] || 0;
+    });
+    return expanded;
+  };
+  const currentCounts = Array(items.length).fill(0);
 
   // Precompute suffix maxima so each search node can evaluate its upper bound
   // in constant time instead of rescanning all remaining units.
@@ -367,13 +445,9 @@ function optimizeArmyItems(items, slotLimits, budget, options = {}) {
     return Math.min(budgetBound, slotBound, perCategoryBound, lagrangianBound);
   }
 
-  function search(index, remainingBudget, remainingSlots, value) {
-    if (searchAborted) return;
-    if (deadline && Date.now() >= deadline) {
-      searchAborted = true;
-      return;
-    }
+  function search(index, remainingBudget, remainingSlots, value, lagrangianLoss) {
     nodesVisited += 1;
+    if (lagrangianLoss >= improvementGap - 1e-9) return;
     if (index >= items.length) {
       if (value > bestValue) {
         bestValue = value;
@@ -391,25 +465,27 @@ function optimizeArmyItems(items, slotLimits, budget, options = {}) {
     );
 
     for (let quantity = maximum; quantity >= 0; quantity -= 1) {
-      if (deadline && Date.now() >= deadline) {
-        searchAborted = true;
-        break;
-      }
       currentCounts[index] = quantity;
       remainingSlots[item.type] -= quantity;
       search(
         index + 1,
         remainingBudget - quantity * item.cost,
         remainingSlots,
-        value + quantity * item.value
+        value + quantity * item.value,
+        lagrangianLoss + quantity * itemLosses[index]
       );
       remainingSlots[item.type] += quantity;
     }
     currentCounts[index] = 0;
   }
 
-  search(0, budget, { ...slotLimits }, 0);
-  return { value: bestValue, counts: bestCounts, nodesVisited, exact: !searchAborted };
+  search(0, budget, { ...slotLimits }, 0, 0);
+  return {
+    value: bestValue,
+    counts: expandCounts(bestCounts),
+    nodesVisited,
+    exact: true
+  };
 }
 
 function calculateBestArmy(
@@ -474,7 +550,14 @@ function calculateBestArmy(
   }
 
   const reducedItems = removeDominatedItems(items)
-    .sort((a, b) => b.ratio - a.ratio || b.value - a.value || a.cost - b.cost);
+    // Search one slot pool at a time and consider expensive upgrades first.
+    // This preserves exhaustive coverage while making the upper bound useful
+    // much earlier for large alliances.
+    .sort((a, b) => (
+      a.type.localeCompare(b.type)
+      || b.cost - a.cost
+      || b.value - a.value
+    ));
   const searchResult = optimizeArmyItems(
     reducedItems,
     slotLimits,
@@ -657,13 +740,11 @@ function displayResults(result) {
     </div>
   `;
 
-  if (result.exact === false) {
-    html += `
-      <div style="margin-top:10px; color:#ffd27a; font-size:12px; max-width:320px;">
-        Best safe result found before the calculation limit. Try a smaller budget for a fully exact search.
-      </div>
-    `;
-  }
+  html += `
+    <div style="margin-top:10px; color:#b9d99c; font-size:12px; max-width:320px;">
+      Exact optimum proven for these settings.
+    </div>
+  `;
   
   resultsContent.innerHTML = html;
 }
@@ -677,14 +758,7 @@ function parseArmyNumber(value) {
 
 function calculateInWorker(params, onResult, onError) {
   if (typeof Worker !== 'function') {
-    onResult(calculateBestArmy(
-      params.playerLevel,
-      params.upkeepBudget,
-      params.allianceSize,
-      params.optimizeType,
-      params.unitTypeFilter,
-      { deadline: Date.now() + 1000 }
-    ));
+    onError('This browser does not support Web Workers, so the exact calculation cannot run safely here.');
     return null;
   }
 
@@ -704,7 +778,7 @@ function calculateInWorker(params, onResult, onError) {
     worker.terminate();
     onError(event.message || 'The army calculation could not be completed.');
   };
-  worker.postMessage({ ...params, timeLimitMs: 5000 });
+  worker.postMessage(params);
   return worker;
 }
 
@@ -712,16 +786,12 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
   self.onmessage = event => {
     try {
       const params = event.data || {};
-      const timeLimitMs = Number.isFinite(params.timeLimitMs)
-        ? Math.max(250, Math.min(params.timeLimitMs, 10000))
-        : 5000;
       const result = calculateBestArmy(
         params.playerLevel,
         params.upkeepBudget,
         params.allianceSize,
         params.optimizeType,
-        params.unitTypeFilter || 'all',
-        { deadline: Date.now() + timeLimitMs }
+        params.unitTypeFilter || 'all'
       );
       self.postMessage({ type: 'result', result });
     } catch (error) {
@@ -760,7 +830,11 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
     if (activeWorker) activeWorker.terminate();
     calculateButton.disabled = true;
     const buttonLabel = calculateButton.querySelector('span');
-    if (buttonLabel) buttonLabel.textContent = 'Calculating...';
+    if (buttonLabel) buttonLabel.textContent = 'Calculating exact...';
+    const resultsSection = document.getElementById('results');
+    const resultsContent = document.getElementById('results-content');
+    resultsSection.style.display = 'block';
+    resultsContent.innerHTML = '<div style="color:white;">Searching for the exact optimum. This may take a little while for very large budgets.</div>';
 
     activeWorker = calculateInWorker(
       { playerLevel, upkeepBudget, allianceSize, optimizeType, unitTypeFilter },
