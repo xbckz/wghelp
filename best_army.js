@@ -644,6 +644,15 @@ function formatNumber(num) {
   return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 // Display results
 function displayResults(result) {
   const resultsSection = document.getElementById('results');
@@ -705,18 +714,19 @@ function displayResults(result) {
   
   // Units grid
   if (result.army.length > 0) {
-    html += `<div style="display:grid; grid-template-columns: repeat(2, 92px); gap:6px 8px; justify-content:start;">`;
-    result.army.forEach(unit => {
+    html += '<div class="best-army-unit-grid">';
+    result.army.forEach((unit, index) => {
       const imgSrc = getUnitImage(unit.name, unit.type);
       html += `
-        <div title="${unit.name}" style="background-color: rgba(0,0,0,0.3); border-radius:8px; padding:3px; width:85px; min-height:112px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center;">
+        <button type="button" class="best-army-unit-card" data-best-army-unit-index="${index}" aria-label="Show stats for ${escapeHtml(unit.name)}">
           <img src="${imgSrc}" alt="${unit.name}" style="width:58px; height:58px; object-fit:contain; margin-bottom:3px;" />
           <span style="color:white; font-size:12px; font-weight:bold;">${formatNumber(unit.quantity)}x</span>
           <span style="color:#ddd; font-size:10px; line-height:11px; margin-top:2px;">${unit.name}</span>
-        </div>
+        </button>
       `;
     });
     html += `</div>`;
+    html += '<div id="best-army-unit-detail" class="best-army-unit-detail" hidden aria-live="polite"></div>';
   }
   
   // Summary stats box
@@ -747,6 +757,41 @@ function displayResults(result) {
   `;
   
   resultsContent.innerHTML = html;
+
+  const detail = document.getElementById('best-army-unit-detail');
+  if (!detail) return;
+
+  const showUnitDetails = card => {
+    const unit = result.army[Number(card.dataset.bestArmyUnitIndex)];
+    if (!unit) return;
+    detail.innerHTML = `
+      <h5>${escapeHtml(unit.name)}</h5>
+      <ul>
+        <li>Offensive strength: ${formatNumber(unit.attack)}</li>
+        <li>Defensive strength: ${formatNumber(unit.defense)}</li>
+        <li>Upkeep: ${formatNumber(unit.upkeep)}</li>
+        <li>Quantity: ${formatNumber(unit.quantity)}x</li>
+        <li>Total upkeep: ${formatNumber(unit.totalUpkeep)}</li>
+      </ul>
+      ${unit.quantity === 1
+        ? '<div style="margin-top:8px; color:#e5e0d2; font-size:12px;">This single unit is part of the exact integer optimum; it is not a rounding artifact.</div>'
+        : ''}
+    `;
+    detail.hidden = false;
+    document.querySelectorAll('.best-army-unit-card').forEach(other => {
+      other.setAttribute('aria-pressed', other === card ? 'true' : 'false');
+    });
+  };
+
+  resultsContent.querySelectorAll('.best-army-unit-card').forEach(card => {
+    card.addEventListener('click', () => showUnitDetails(card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showUnitDetails(card);
+      }
+    });
+  });
 }
 
 function parseArmyNumber(value) {
@@ -764,7 +809,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('best_army.js');
+    worker = new Worker('best_army.js?v=20260929-2');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;

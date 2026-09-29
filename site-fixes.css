@@ -143,6 +143,56 @@ img {
   overflow-wrap: anywhere;
 }
 
+.best-plan-card {
+  appearance: none;
+  -webkit-appearance: none;
+  font: inherit;
+  cursor: pointer;
+  background: rgba(0,0,0,0.3);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 3px;
+  width: 85px;
+  height: 95px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.best-plan-card:hover,
+.best-plan-card:focus-visible {
+  border-color: rgba(230,166,76,0.9);
+  outline: none;
+}
+
+.best-plan-detail {
+  width: min(100%, 320px);
+  margin-top: 10px;
+  padding: 12px 14px;
+  border-radius: 6px;
+  background: rgba(85,80,76,0.92);
+  color: #fff;
+  font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  box-sizing: border-box;
+}
+
+.best-plan-detail h5 {
+  margin: 0 0 6px;
+  font-size: 18px;
+  font-weight: normal;
+}
+
+.best-plan-detail ul {
+  margin: 0;
+  padding-left: 19px;
+}
+
+.best-plan-detail li {
+  margin: 2px 0;
+  font-size: 14px;
+}
+
 .page-description h1,
 .page-description h2 {
   margin: 0 0 10px;

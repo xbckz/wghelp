@@ -103,6 +103,19 @@ const buildingImages = {
   "Ion Shield": "10.jpg"
 };
 
+function escapeDefenseHtml(value) {
+  return String(value)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+function formatDefenseCount(value) {
+  return Number(value).toLocaleString('en-US');
+}
+
 // === Calculate button ===
 document.getElementById("calculate").addEventListener("click", () => {
   let budget = parseUserNumber(document.getElementById("budget").value) || 0;
@@ -111,6 +124,7 @@ document.getElementById("calculate").addEventListener("click", () => {
   defenses.forEach((d, i) => {
     d.owned = parseUserNumber(localStorage.getItem(`owned-${i+1}`)) || 0;
     d.bought = 0;
+    d.totalSpent = 0;
     const unlocked = localStorage.getItem(`unlockState-${i+1}`) || "locked";
     d.locked = unlocked !== "unlocked";
   });
@@ -127,6 +141,7 @@ document.getElementById("calculate").addEventListener("click", () => {
 
     const best = affordable.reduce((a, b) => a.value > b.value ? a : b);
     budget -= best.next_price;
+    best.totalSpent += best.next_price;
     best.owned++;
     best.bought++;
   }
@@ -161,30 +176,21 @@ defenses.forEach((d, i) => {
       ">
     `;
 
-    boughtDefenses.forEach(d => {
+    boughtDefenses.forEach((d, index) => {
       output += `
-        <div style="
-          background-color: rgba(0,0,0,0.3);
-          border-radius: 8px;
-          padding: 3px;
-          width: 85px;
-          height: 95px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-        ">
+        <button type="button" class="best-plan-card" data-defense-result-index="${index}" aria-label="Show stats for ${escapeDefenseHtml(d.name)}">
           <img src="${imgSrcPrefix}${d.imgId}.jpg"
-               alt=""
+               alt="${escapeDefenseHtml(d.name)}"
                style="width:58px; height:58px; object-fit:contain; margin-bottom:3px;" />
           <span style="color:white; font-size:12px; font-weight:bold;">
-            ${d.bought}x
+            ${formatDefenseCount(d.bought)}x
           </span>
-        </div>
+        </button>
       `;
     });
 
     output += `</div>`;
+    output += '<div id="best-defense-detail" class="best-plan-detail" hidden aria-live="polite"></div>';
   } else {
     output += `<p style="color:white;">No buildings can be bought with this budget.</p>`;
   }
@@ -227,6 +233,38 @@ defenses.forEach((d, i) => {
   `;
 
   resDiv.innerHTML = output;
+
+  const detail = document.getElementById('best-defense-detail');
+  if (!detail) return;
+
+  const showDefenseDetails = card => {
+    const defense = boughtDefenses[Number(card.dataset.defenseResultIndex)];
+    if (!defense) return;
+    detail.innerHTML = `
+      <h5>${escapeDefenseHtml(defense.name)}</h5>
+      <ul>
+        <li>Defensive strength: ${formatDefenseCount(defense.def_points)}</li>
+        <li>Next purchase price: ${formatDefenseCount(defense.next_price)}</li>
+        <li>Quantity: ${formatDefenseCount(defense.bought)}x</li>
+        <li>Total defense added: ${formatDefenseCount(defense.bought * defense.def_points)}</li>
+        <li>Total spent: ${formatDefenseCount(defense.totalSpent)}</li>
+      </ul>
+    `;
+    detail.hidden = false;
+    resDiv.querySelectorAll('.best-plan-card').forEach(other => {
+      other.setAttribute('aria-pressed', other === card ? 'true' : 'false');
+    });
+  };
+
+  resDiv.querySelectorAll('.best-plan-card').forEach(card => {
+    card.addEventListener('click', () => showDefenseDetails(card));
+    card.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        showDefenseDetails(card);
+      }
+    });
+  });
 })();
 
 });
