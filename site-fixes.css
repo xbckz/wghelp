@@ -143,35 +143,87 @@ img {
   overflow-wrap: anywhere;
 }
 
+.best-plan-results {
+  position: relative;
+  width: 100%;
+}
+
+.best-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 120px));
+  gap: 8px;
+  justify-content: start;
+  align-items: start;
+}
+
 .best-plan-card {
   appearance: none;
   -webkit-appearance: none;
   font: inherit;
   cursor: pointer;
-  background: rgba(0,0,0,0.3);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 3px;
-  width: 85px;
-  height: 95px;
+  width: 120px;
+  min-height: 143px;
+  padding: 0;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  align-items: stretch;
+  justify-content: flex-start;
+  text-align: center;
+  background: rgba(0,0,0,0.35);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 0;
 }
 
 .best-plan-card:hover,
-.best-plan-card:focus-visible {
-  border-color: rgba(230,166,76,0.9);
+.best-plan-card:focus-visible,
+.best-plan-card[aria-expanded="true"] {
+  border-color: rgba(230,166,76,0.95);
   outline: none;
 }
 
+.best-plan-image {
+  display: block;
+  width: 100%;
+  height: 118px;
+  object-fit: cover;
+}
+
+.best-plan-quantity,
+.best-plan-name {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: anywhere;
+}
+
+.best-plan-quantity {
+  min-height: 24px;
+  padding: 4px 2px 2px;
+  color: #fff;
+  background: rgba(55,55,55,0.96);
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 16px;
+}
+
+.best-plan-name {
+  min-height: 22px;
+  padding: 2px 2px 4px;
+  color: #fff;
+  background: rgba(55,55,55,0.96);
+  font-size: 11px;
+  line-height: 13px;
+}
+
 .best-plan-detail {
-  width: min(100%, 320px);
-  margin-top: 10px;
+  position: absolute;
+  z-index: 5;
+  width: 176px;
+  margin: 0;
   padding: 12px 14px;
   border-radius: 6px;
-  background: rgba(85,80,76,0.92);
+  background: rgba(85,80,76,0.95);
   color: #fff;
   font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
   box-sizing: border-box;
@@ -214,5 +266,24 @@ img {
   .listView .listViewItem {
     padding-left: max(16px, env(safe-area-inset-left));
     padding-right: max(16px, env(safe-area-inset-right));
+  }
+
+  .best-plan-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .best-plan-card {
+    width: 100%;
+    min-height: 0;
+  }
+
+  .best-plan-image {
+    height: auto;
+    aspect-ratio: 1;
+  }
+
+  .best-plan-detail {
+    width: min(176px, calc(100% - 16px));
   }
 }

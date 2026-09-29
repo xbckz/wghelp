@@ -167,30 +167,21 @@ defenses.forEach((d, i) => {
 
   if (boughtDefenses.length > 0) {
     const imgSrcPrefix = ""; // add folder path if needed (e.g. "images/")
-    output += `
-      <div style="
-        display: grid;
-        grid-template-columns: repeat(2, auto);
-        gap: 6px 8px;
-        justify-content: start;
-      ">
-    `;
+    output += '<div class="best-plan-results"><div class="best-plan-grid">';
 
     boughtDefenses.forEach((d, index) => {
       output += `
         <button type="button" class="best-plan-card" data-defense-result-index="${index}" aria-label="Show stats for ${escapeDefenseHtml(d.name)}">
-          <img src="${imgSrcPrefix}${d.imgId}.jpg"
-               alt="${escapeDefenseHtml(d.name)}"
-               style="width:58px; height:58px; object-fit:contain; margin-bottom:3px;" />
-          <span style="color:white; font-size:12px; font-weight:bold;">
-            ${formatDefenseCount(d.bought)}x
-          </span>
+          <img src="${imgSrcPrefix}${d.imgId}.jpg" alt="${escapeDefenseHtml(d.name)}" class="best-plan-image" />
+          <span class="best-plan-quantity">× ${formatDefenseCount(d.bought)}</span>
+          <span class="best-plan-name">${escapeDefenseHtml(d.name)}</span>
         </button>
       `;
     });
 
     output += `</div>`;
     output += '<div id="best-defense-detail" class="best-plan-detail" hidden aria-live="polite"></div>';
+    output += '</div>';
   } else {
     output += `<p style="color:white;">No buildings can be bought with this budget.</p>`;
   }
@@ -251,9 +242,33 @@ defenses.forEach((d, i) => {
       </ul>
     `;
     detail.hidden = false;
+    detail.setAttribute('aria-hidden', 'false');
     resDiv.querySelectorAll('.best-plan-card').forEach(other => {
       other.setAttribute('aria-pressed', other === card ? 'true' : 'false');
+      other.setAttribute('aria-expanded', other === card ? 'true' : 'false');
     });
+
+    const resultsRoot = detail.closest('.best-plan-results');
+    if (!resultsRoot) return;
+    const rootRect = resultsRoot.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const gap = 10;
+    const detailWidth = detail.offsetWidth;
+    const rootWidth = resultsRoot.clientWidth;
+    const rightPosition = cardRect.right - rootRect.left + gap;
+    const leftPosition = cardRect.left - rootRect.left - detailWidth - gap;
+
+    let left = rightPosition;
+    let top = cardRect.top - rootRect.top + 6;
+    if (rightPosition + detailWidth > rootWidth && leftPosition >= 0) {
+      left = leftPosition;
+    } else if (rightPosition + detailWidth > rootWidth) {
+      left = Math.max(0, Math.min(cardRect.left - rootRect.left, rootWidth - detailWidth));
+      top = cardRect.bottom - rootRect.top + 8;
+    }
+
+    detail.style.left = `${Math.round(left)}px`;
+    detail.style.top = `${Math.round(top)}px`;
   };
 
   resDiv.querySelectorAll('.best-plan-card').forEach(card => {

@@ -711,22 +711,49 @@ function displayResults(result) {
   };
   
   let html = '';
-  
-  // Units grid
+
+  const groupLabels = {
+    Infantry: 'Soldiers',
+    Vehicles: 'Machinery',
+    Aircraft: 'Aeroplanes'
+  };
+
+  // Keep the result cards in the same grouped order as the game troop pages.
   if (result.army.length > 0) {
-    html += '<div class="best-army-unit-grid">';
-    result.army.forEach((unit, index) => {
-      const imgSrc = getUnitImage(unit.name, unit.type);
+    html += '<div class="best-army-units" id="best-army-units">';
+    html += '<h4 class="best-army-units-heading">Units</h4>';
+
+    UNIT_TYPE_LABELS && Object.values(UNIT_TYPE_LABELS).forEach(typeLabel => {
+      const units = result.army
+        .map((unit, index) => ({ unit, index }))
+        .filter(entry => entry.unit.type === typeLabel);
+      if (units.length === 0) return;
+
       html += `
-        <button type="button" class="best-army-unit-card" data-best-army-unit-index="${index}" aria-label="Show stats for ${escapeHtml(unit.name)}">
-          <img src="${imgSrc}" alt="${unit.name}" style="width:58px; height:58px; object-fit:contain; margin-bottom:3px;" />
-          <span style="color:white; font-size:12px; font-weight:bold;">${formatNumber(unit.quantity)}x</span>
-          <span style="color:#ddd; font-size:10px; line-height:11px; margin-top:2px;">${unit.name}</span>
-        </button>
+        <section class="best-army-unit-group" aria-labelledby="best-army-${typeLabel.toLowerCase()}-heading">
+          <h5 id="best-army-${typeLabel.toLowerCase()}-heading" class="best-army-unit-group-title">${groupLabels[typeLabel]}</h5>
+          <div class="best-army-unit-grid">
+      `;
+
+      units.forEach(({ unit, index }) => {
+        const imgSrc = getUnitImage(unit.name, unit.type);
+        html += `
+          <button type="button" class="best-army-unit-card" data-best-army-unit-index="${index}" aria-label="Show stats for ${escapeHtml(unit.name)}" aria-expanded="false">
+            <img src="${imgSrc}" alt="${escapeHtml(unit.name)}" class="best-army-unit-image" />
+            <span class="best-army-unit-quantity">× ${formatNumber(unit.quantity)}</span>
+            <span class="best-army-unit-name">${escapeHtml(unit.name)}</span>
+          </button>
+        `;
+      });
+
+      html += `
+          </div>
+        </section>
       `;
     });
-    html += `</div>`;
-    html += '<div id="best-army-unit-detail" class="best-army-unit-detail" hidden aria-live="polite"></div>';
+
+    html += '<div id="best-army-unit-detail" class="best-army-unit-detail" hidden aria-live="polite" role="status"></div>';
+    html += '</div>';
   }
   
   // Summary stats box
@@ -750,12 +777,6 @@ function displayResults(result) {
     </div>
   `;
 
-  html += `
-    <div style="margin-top:10px; color:#b9d99c; font-size:12px; max-width:320px;">
-      Exact optimum proven for these settings.
-    </div>
-  `;
-  
   resultsContent.innerHTML = html;
 
   const detail = document.getElementById('best-army-unit-detail');
@@ -770,17 +791,36 @@ function displayResults(result) {
         <li>Offensive strength: ${formatNumber(unit.attack)}</li>
         <li>Defensive strength: ${formatNumber(unit.defense)}</li>
         <li>Upkeep: ${formatNumber(unit.upkeep)}</li>
-        <li>Quantity: ${formatNumber(unit.quantity)}x</li>
-        <li>Total upkeep: ${formatNumber(unit.totalUpkeep)}</li>
       </ul>
-      ${unit.quantity === 1
-        ? '<div style="margin-top:8px; color:#e5e0d2; font-size:12px;">This single unit is part of the exact integer optimum; it is not a rounding artifact.</div>'
-        : ''}
     `;
     detail.hidden = false;
+    detail.setAttribute('aria-hidden', 'false');
     document.querySelectorAll('.best-army-unit-card').forEach(other => {
       other.setAttribute('aria-pressed', other === card ? 'true' : 'false');
+      other.setAttribute('aria-expanded', other === card ? 'true' : 'false');
     });
+
+    const unitsRoot = document.getElementById('best-army-units');
+    if (!unitsRoot) return;
+    const rootRect = unitsRoot.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    const gap = 10;
+    const detailWidth = detail.offsetWidth;
+    const rootWidth = unitsRoot.clientWidth;
+    const rightPosition = cardRect.right - rootRect.left + gap;
+    const leftPosition = cardRect.left - rootRect.left - detailWidth - gap;
+
+    let left = rightPosition;
+    let top = cardRect.top - rootRect.top + 6;
+    if (rightPosition + detailWidth > rootWidth && leftPosition >= 0) {
+      left = leftPosition;
+    } else if (rightPosition + detailWidth > rootWidth) {
+      left = Math.max(0, Math.min(cardRect.left - rootRect.left, rootWidth - detailWidth));
+      top = cardRect.bottom - rootRect.top + 8;
+    }
+
+    detail.style.left = `${Math.round(left)}px`;
+    detail.style.top = `${Math.round(top)}px`;
   };
 
   resultsContent.querySelectorAll('.best-army-unit-card').forEach(card => {
@@ -809,7 +849,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('best_army.js?v=20260929-2');
+    worker = new Worker('best_army.js?v=20260929-3');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;
