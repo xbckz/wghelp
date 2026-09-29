@@ -268,13 +268,15 @@ function seedSearch(items, slotLimits, budget) {
 // one shared upkeep budget. The upper bound is deliberately conservative:
 // one bound ignores slot limits, another ignores the budget, and their minimum
 // is still guaranteed to be at least as large as every feasible completion.
-function optimizeArmyItems(items, slotLimits, budget) {
+function optimizeArmyItems(items, slotLimits, budget, options = {}) {
   const bestSeed = seedSearch(items, slotLimits, budget);
   let bestValue = bestSeed.value;
   let bestCounts = bestSeed.counts;
   const currentCounts = Array(items.length).fill(0);
   const categories = Object.keys(slotLimits).filter(type => UNIT_TYPES.includes(type));
   let nodesVisited = 0;
+  let searchAborted = false;
+  const deadline = Number.isFinite(options.deadline) ? options.deadline : 0;
 
   // Precompute suffix maxima so each search node can evaluate its upper bound
   // in constant time instead of rescanning all remaining units.
@@ -366,6 +368,11 @@ function optimizeArmyItems(items, slotLimits, budget) {
   }
 
   function search(index, remainingBudget, remainingSlots, value) {
+    if (searchAborted) return;
+    if (deadline && Date.now() >= deadline) {
+      searchAborted = true;
+      return;
+    }
     nodesVisited += 1;
     if (index >= items.length) {
       if (value > bestValue) {
@@ -384,6 +391,10 @@ function optimizeArmyItems(items, slotLimits, budget) {
     );
 
     for (let quantity = maximum; quantity >= 0; quantity -= 1) {
+      if (deadline && Date.now() >= deadline) {
+        searchAborted = true;
+        break;
+      }
       currentCounts[index] = quantity;
       remainingSlots[item.type] -= quantity;
       search(
@@ -398,10 +409,17 @@ function optimizeArmyItems(items, slotLimits, budget) {
   }
 
   search(0, budget, { ...slotLimits }, 0);
-  return { value: bestValue, counts: bestCounts, nodesVisited };
+  return { value: bestValue, counts: bestCounts, nodesVisited, exact: !searchAborted };
 }
 
-function calculateBestArmy(playerLevel, upkeepBudget, allianceSize, optimizeType, unitTypeFilter) {
+function calculateBestArmy(
+  playerLevel,
+  upkeepBudget,
+  allianceSize,
+  optimizeType,
+  unitTypeFilter,
+  searchOptions = {}
+) {
   const slotLimits = calculateSlotLimits(playerLevel, allianceSize);
   const typesToInclude = unitTypeFilter === 'all' ? UNIT_TYPES : [unitTypeFilter];
   const categoryInfo = [];
@@ -457,7 +475,12 @@ function calculateBestArmy(playerLevel, upkeepBudget, allianceSize, optimizeType
 
   const reducedItems = removeDominatedItems(items)
     .sort((a, b) => b.ratio - a.ratio || b.value - a.value || a.cost - b.cost);
-  const searchResult = optimizeArmyItems(reducedItems, slotLimits, Math.max(0, upkeepBudget - baselineUpkeep));
+  const searchResult = optimizeArmyItems(
+    reducedItems,
+    slotLimits,
+    Math.max(0, upkeepBudget - baselineUpkeep),
+    searchOptions
+  );
   const quantities = new Map();
   const paidSlotsByType = Object.fromEntries(UNIT_TYPES.map(type => [type, 0]));
 
@@ -501,11 +524,20 @@ function calculateBestArmy(playerLevel, upkeepBudget, allianceSize, optimizeType
     upkeepBudget,
     allianceSize,
     optimizeType,
-    searchResult.nodesVisited
+    searchResult.nodesVisited,
+    searchResult.exact
   );
 }
 
-function buildArmyResult(army, slotLimits, upkeepBudget, allianceSize, optimizeType, nodesVisited) {
+function buildArmyResult(
+  army,
+  slotLimits,
+  upkeepBudget,
+  allianceSize,
+  optimizeType,
+  nodesVisited,
+  exact = true
+) {
   const totalUpkeep = army.reduce((sum, unit) => sum + unit.totalUpkeep, 0);
   return {
     army,
@@ -519,7 +551,7 @@ function buildArmyResult(army, slotLimits, upkeepBudget, allianceSize, optimizeT
     upkeepBudget,
     optimizeType,
     nodesVisited,
-    exact: true
+    exact
   };
 }
 
@@ -624,11 +656,18 @@ function displayResults(result) {
       <div style="color:white; font-size:13px;"><strong>Slots:</strong> ${formatNumber(result.slotLimits.infantry)} infantry · ${formatNumber(result.slotLimits.vehicles)} vehicles · ${formatNumber(result.slotLimits.aircraft)} aircraft</div>
     </div>
   `;
+
+  if (result.exact === false) {
+    html += `
+      <div style="margin-top:10px; color:#ffd27a; font-size:12px; max-width:320px;">
+        Best safe result found before the calculation limit. Try a smaller budget for a fully exact search.
+      </div>
+    `;
+  }
   
   resultsContent.innerHTML = html;
 }
 
-// Event listener for calculate button
 function parseArmyNumber(value) {
   const normalized = String(value ?? '').replace(/,/g, '').trim();
   if (!normalized) return NaN;
@@ -636,28 +675,107 @@ function parseArmyNumber(value) {
   return Number.isFinite(parsed) ? parsed : NaN;
 }
 
-document.getElementById('calculate').addEventListener('click', function() {
-  const playerLevel = Math.floor(parseArmyNumber(document.getElementById('player-level').value) || 0);
-  const upkeepBudget = Math.floor(parseArmyNumber(document.getElementById('upkeep-budget').value) || 0);
-  const allianceSize = Math.floor(parseArmyNumber(document.getElementById('alliance-size').value) || 0);
-  const optimizeType = document.getElementById('optimize-type').value;
-  const unitTypeFilter = 'all';
-  
-  if (playerLevel <= 0 || playerLevel > 250) {
-    alert('Please enter a valid player level (1-250).');
-    return;
+function calculateInWorker(params, onResult, onError) {
+  if (typeof Worker !== 'function') {
+    onResult(calculateBestArmy(
+      params.playerLevel,
+      params.upkeepBudget,
+      params.allianceSize,
+      params.optimizeType,
+      params.unitTypeFilter,
+      { deadline: Date.now() + 1000 }
+    ));
+    return null;
   }
-  
-  if (upkeepBudget < 0) {
-    alert('Please enter a valid upkeep budget (0 or higher).');
-    return;
+
+  let worker;
+  try {
+    worker = new Worker('best_army.js');
+  } catch (error) {
+    onError(error?.message || 'The army calculation could not be started.');
+    return null;
   }
-  
-  if (allianceSize <= 0) {
-    alert('Please enter a valid alliance size (1 or higher).');
-    return;
-  }
-  
-  const result = calculateBestArmy(playerLevel, upkeepBudget, allianceSize, optimizeType, unitTypeFilter);
-  displayResults(result);
-});
+  worker.onmessage = event => {
+    if (event.data?.type === 'error') onError(event.data.message);
+    else onResult(event.data.result);
+    worker.terminate();
+  };
+  worker.onerror = event => {
+    worker.terminate();
+    onError(event.message || 'The army calculation could not be completed.');
+  };
+  worker.postMessage({ ...params, timeLimitMs: 5000 });
+  return worker;
+}
+
+if (typeof document === 'undefined' && typeof self !== 'undefined') {
+  self.onmessage = event => {
+    try {
+      const params = event.data || {};
+      const timeLimitMs = Number.isFinite(params.timeLimitMs)
+        ? Math.max(250, Math.min(params.timeLimitMs, 10000))
+        : 5000;
+      const result = calculateBestArmy(
+        params.playerLevel,
+        params.upkeepBudget,
+        params.allianceSize,
+        params.optimizeType,
+        params.unitTypeFilter || 'all',
+        { deadline: Date.now() + timeLimitMs }
+      );
+      self.postMessage({ type: 'result', result });
+    } catch (error) {
+      self.postMessage({
+        type: 'error',
+        message: error?.message || 'The army calculation could not be completed.'
+      });
+    }
+  };
+} else {
+  let activeWorker = null;
+  const calculateButton = document.getElementById('calculate');
+
+  calculateButton.addEventListener('click', function() {
+    const playerLevel = Math.floor(parseArmyNumber(document.getElementById('player-level').value) || 0);
+    const upkeepBudget = Math.floor(parseArmyNumber(document.getElementById('upkeep-budget').value) || 0);
+    const allianceSize = Math.floor(parseArmyNumber(document.getElementById('alliance-size').value) || 0);
+    const optimizeType = document.getElementById('optimize-type').value;
+    const unitTypeFilter = 'all';
+
+    if (playerLevel <= 0 || playerLevel > 250) {
+      alert('Please enter a valid player level (1-250).');
+      return;
+    }
+
+    if (upkeepBudget < 0) {
+      alert('Please enter a valid upkeep budget (0 or higher).');
+      return;
+    }
+
+    if (allianceSize <= 0) {
+      alert('Please enter a valid alliance size (1 or higher).');
+      return;
+    }
+
+    if (activeWorker) activeWorker.terminate();
+    calculateButton.disabled = true;
+    const buttonLabel = calculateButton.querySelector('span');
+    if (buttonLabel) buttonLabel.textContent = 'Calculating...';
+
+    activeWorker = calculateInWorker(
+      { playerLevel, upkeepBudget, allianceSize, optimizeType, unitTypeFilter },
+      result => {
+        displayResults(result);
+        calculateButton.disabled = false;
+        if (buttonLabel) buttonLabel.textContent = 'Calculate Best Army';
+        activeWorker = null;
+      },
+      message => {
+        alert(message);
+        calculateButton.disabled = false;
+        if (buttonLabel) buttonLabel.textContent = 'Calculate Best Army';
+        activeWorker = null;
+      }
+    );
+  });
+}
