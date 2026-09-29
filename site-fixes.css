@@ -28,36 +28,41 @@ body {
 .header-row {
   align-items: stretch;
   width: 100%;
-  height: clamp(99px, 27.57vw, 204px);
-  min-height: 99px;
+  height: 102px;
+  min-height: 102px;
   margin-bottom: 0 !important;
   overflow: hidden;
 }
 
-/* Keep the center artwork and its repeating side panels on one stable
-   370:204 ratio instead of letting each legacy page scale them independently. */
+/* The local header art is a 2x retina asset, matching the official 185:102
+   rendered header size at every viewport width. */
 .header-row .header {
   flex: 0 0 auto;
-  width: clamp(180px, 50vw, 370px) !important;
-  max-width: 100%;
-  height: 100% !important;
+  width: 185px !important;
+  max-width: calc(100% - 44px);
+  height: 102px !important;
   object-fit: contain;
 }
 
 .header-row .header_ext {
   flex: 1 1 0;
   min-width: 0;
-  height: 100% !important;
-  background-size: auto 100%;
+  height: 102px !important;
+  background-size: auto 102px;
 }
 
-/* The title is layered over the same artwork, so scale its position, type,
-   and shadow with the center image instead of leaving it at a fixed size. */
+/* Match the official 140px title area layered over the center artwork. */
 .header-text {
-  top: clamp(4px, 1.216vw, 9px) !important;
-  font-size: clamp(7px, 1.946vw, 14.4px) !important;
-  line-height: 1.1;
-  text-shadow: 0.07em 0.07em 0.21em rgba(0,0,0,0.7);
+  top: 0 !important;
+  left: 50%;
+  width: 140px;
+  height: 38px;
+  transform: translateX(-50%);
+  font-size: 16px !important;
+  line-height: 34px;
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
