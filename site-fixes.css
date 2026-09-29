@@ -64,30 +64,47 @@ img {
   }
 
   .tabsOuter {
+    display: block;
     width: 100%;
     max-width: 100%;
+    min-height: 0;
+    height: auto !important;
+    margin: 0 !important;
     clear: both;
-    padding-bottom: 8px;
-    overflow: visible;
+    padding: 8px 0 12px !important;
+    overflow: visible !important;
   }
 
   .tabsWrap {
-    display: flow-root;
+    display: block !important;
     width: 100%;
     max-width: 100%;
-    overflow: visible;
+    min-height: 0;
+    height: auto !important;
+    margin: 0 !important;
+    overflow: visible !important;
   }
 
   .tabs {
-    display: flex;
-    flex-wrap: wrap;
+    display: flex !important;
+    flex-flow: row wrap;
+    align-content: flex-start;
     float: none !important;
     width: max-content;
     max-width: calc(100% - 20px);
     min-width: 0;
     height: auto !important;
     margin: 10px auto;
-    overflow: visible;
+    overflow: visible !important;
+  }
+
+  /* The six-link tool navigation gets a bounded flex line so it wraps cleanly
+     instead of keeping its desktop intrinsic width and being clipped. Smaller
+     tab groups (such as Attributes/Achievements) retain their compact shape. */
+  .tabs:has(> li:nth-child(6)) {
+    width: calc(100% - 20px);
+    max-width: calc(100% - 20px);
+    margin: 0 auto;
   }
 
   .tabs li {
@@ -109,6 +126,10 @@ img {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .tabs:has(> li:nth-child(6)) li {
+    flex: 0 0 auto;
   }
 
   /* The legacy pages pull the next section upward with a negative margin;
