@@ -27,7 +27,7 @@ const incomeImages = incomes.reduce((acc, b, idx) => {
 function readSavedOwned() {
   return incomes.map((b, i) => {
     const stored = localStorage.getItem(`owned-${i + 11}`);
-    return stored ? parseInt(stored, 10) : 0;
+    return stored ? parseUserNumber(stored) : 0;
   });
 }
 
@@ -162,11 +162,13 @@ function renderPrediction(result) {
 const calcBtn = document.getElementById("calculate");
 if (calcBtn) {
   calcBtn.addEventListener("click", () => {
-    const targetIncome = parseFloat(document.getElementById("target-income").value) || 0;
-    const bonus = parseFloat(document.getElementById("bonus").value) || 0;
+    const targetIncome = parseUserNumber(document.getElementById("target-income").value) || 0;
+    const bonus = parseUserNumber(document.getElementById("bonus").value) || 0;
     const result = simulatePredict(targetIncome, bonus);
     renderPrediction(result);
   });
 } else {
   console.warn("Calculate button (#calculate) not found in DOM.");
 }
+
+formatNumberInputs();

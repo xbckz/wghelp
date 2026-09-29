@@ -87,7 +87,7 @@ const defenses = [
 // Load owned values from localStorage
 defenses.forEach((d, i) => {
   const stored = localStorage.getItem(`owned-${i + 1}`);
-  d.owned = stored ? parseInt(stored) : 0;
+  d.owned = stored ? parseUserNumber(stored) : 0;
   d.bought = 0;
 });
 
@@ -101,11 +101,11 @@ document.getElementById("calculate")?.addEventListener("click", () => {
   const targetInput = document.getElementById("target-income");
   if (!targetInput) return;
 
-  const targetDefense = parseFloat(targetInput.value) || 0;
+  const targetDefense = parseUserNumber(targetInput.value) || 0;
 
   // Refresh owned and locked states
   defenses.forEach((d, i) => {
-    d.owned = parseInt(localStorage.getItem(`owned-${i + 1}`)) || 0;
+    d.owned = parseUserNumber(localStorage.getItem(`owned-${i + 1}`)) || 0;
     d.bought = 0;
     const unlocked = localStorage.getItem(`unlockState-${i + 1}`) || "locked";
     d.locked = unlocked !== "unlocked";
@@ -189,7 +189,7 @@ document.getElementById("calculate")?.addEventListener("click", () => {
 const calcBtn = document.getElementById("calculate");
 if (calcBtn) {
   calcBtn.addEventListener("click", () => {
-    const targetIncome = parseFloat(document.getElementById("target-income").value) || 0;
+    const targetIncome = parseUserNumber(document.getElementById("target-income").value) || 0;
     const result = simulatePredict(targetIncome);
     renderPrediction(result);
   });
@@ -199,7 +199,7 @@ if (calcBtn) {
 
 function updateCurrentDefense() {
   const currentDefense = defenses.reduce((sum, d, i) => {
-    const owned = parseInt(localStorage.getItem(`owned-${i + 1}`)) || 0;
+    const owned = parseUserNumber(localStorage.getItem(`owned-${i + 1}`)) || 0;
     return sum + owned * d.def_points;
   }, 0);
 
@@ -209,3 +209,4 @@ function updateCurrentDefense() {
 
 // Run it on page load
 updateCurrentDefense();
+formatNumberInputs();

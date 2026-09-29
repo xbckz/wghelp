@@ -16,6 +16,8 @@ document.querySelectorAll('input[id^="owned-"]').forEach(input => {
   });
 });
 
+formatNumberInputs();
+
 // === Sheet toggle ===
 const toggleImg = document.getElementById('sheet-toggle');
 let sheetVisible = true;
@@ -83,7 +85,7 @@ const defenses = [
 // === Load owned values from localStorage ===
 defenses.forEach((d, i) => {
   const stored = localStorage.getItem(`owned-${i+1}`);
-  d.owned = stored ? parseInt(stored) : 0;
+  d.owned = stored ? parseUserNumber(stored) : 0;
   d.bought = 0;
 });
 
@@ -103,11 +105,11 @@ const buildingImages = {
 
 // === Calculate button ===
 document.getElementById("calculate").addEventListener("click", () => {
-  let budget = parseFloat(document.getElementById("budget").value) || 0;
+  let budget = parseUserNumber(document.getElementById("budget").value) || 0;
 
   // Refresh owned and locked states
   defenses.forEach((d, i) => {
-    d.owned = parseInt(localStorage.getItem(`owned-${i+1}`)) || 0;
+    d.owned = parseUserNumber(localStorage.getItem(`owned-${i+1}`)) || 0;
     d.bought = 0;
     const unlocked = localStorage.getItem(`unlockState-${i+1}`) || "locked";
     d.locked = unlocked !== "unlocked";
@@ -133,7 +135,7 @@ document.getElementById("calculate").addEventListener("click", () => {
 defenses.forEach((d, i) => {
   localStorage.setItem(`owned-${i+1}`, d.owned);
   const input = document.getElementById(`owned-${i+1}`);
-  if (input) input.value = d.owned; // instantly reflect in the text fields
+  if (input) input.value = formatNumberInputValue(d.owned); // instantly reflect in the text fields
 });
 
 

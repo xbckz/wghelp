@@ -15,6 +15,8 @@ document.querySelectorAll('input[id^="owned-"]').forEach(input => {
   });
 });
 
+formatNumberInputs();
+
 // === Sheet toggle ===
 const toggleImg = document.getElementById('sheet-toggle');
 let sheetVisible = true;
@@ -91,7 +93,7 @@ const incomes = [
 // Load owned values from localStorage
 incomes.forEach((b, i) => {
   const stored = localStorage.getItem(`owned-${i + 11}`);
-  b.owned = stored ? parseInt(stored) : 0;
+  b.owned = stored ? parseUserNumber(stored) : 0;
   b.bought = 0;
 });
 
@@ -103,11 +105,11 @@ const incomeImages = incomes.reduce((acc, b, idx) => {
 
 // === Calculate button logic ===
 document.getElementById("calculate").addEventListener("click", () => {
-  let budget = parseFloat(document.getElementById("budget").value) || 0;
+  let budget = parseUserNumber(document.getElementById("budget").value) || 0;
 
   // Refresh owned and locked states
   incomes.forEach((b, i) => {
-    b.owned = parseInt(localStorage.getItem(`owned-${i + 11}`)) || 0;
+    b.owned = parseUserNumber(localStorage.getItem(`owned-${i + 11}`)) || 0;
     b.bought = 0;
 
     const unlocked = localStorage.getItem(`unlockState-${i + 11}`) || "locked";
@@ -134,7 +136,7 @@ document.getElementById("calculate").addEventListener("click", () => {
   incomes.forEach((b, i) => {
     localStorage.setItem(`owned-${i + 11}`, b.owned);
     const input = document.getElementById(`owned-${i + 11}`);
-    if (input) input.value = b.owned;
+    if (input) input.value = formatNumberInputValue(b.owned);
   });
 
   // Render Best Plan output
