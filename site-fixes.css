@@ -51,6 +51,16 @@ body {
   background-size: auto 100%;
 }
 
+/* The title is layered over the same artwork, so scale its position, type,
+   and shadow with the center image instead of leaving it at a fixed size. */
+.header-text {
+  top: clamp(4px, 1.216vw, 9px) !important;
+  font-size: clamp(7px, 1.946vw, 14.4px) !important;
+  line-height: 1.1;
+  text-shadow: 0.07em 0.07em 0.21em rgba(0,0,0,0.7);
+  white-space: nowrap;
+}
+
 .header-row + .tabsOuter {
   clear: both;
   position: relative;
