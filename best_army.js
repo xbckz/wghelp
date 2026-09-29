@@ -742,8 +742,8 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
     const optimizeType = document.getElementById('optimize-type').value;
     const unitTypeFilter = 'all';
 
-    if (playerLevel <= 0 || playerLevel > 250) {
-      alert('Please enter a valid player level (1-250).');
+    if (playerLevel <= 0 || playerLevel > 350) {
+      alert('Please enter a valid player level (1-350).');
       return;
     }
 
