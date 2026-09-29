@@ -34,44 +34,25 @@ img {
   max-width: 100%;
 }
 
-/* Keep the tab strip inside the page; mobile tabs become equal-width buttons. */
+/* Keep the shared tab strip inside the page without changing its original
+   intrinsic-width, rounded segmented-button styling. */
 .tabsOuter {
-  width: 100%;
   max-width: 100%;
   overflow-x: hidden;
   overflow-y: hidden;
 }
 
 .tabsWrap {
-  width: 100%;
   max-width: 100%;
-  min-width: 0;
   overflow: hidden;
 }
 
 .tabs {
-  min-width: 100%;
-  float: none !important;
-  display: flex;
-  margin-left: auto;
-  margin-right: auto;
   max-width: 100%;
-}
-
-.tabs li {
-  float: none !important;
-  min-width: 0;
-  flex: 0 0 auto;
 }
 
 .tabs a {
-  min-height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 @media (max-width: 600px) {
@@ -82,50 +63,47 @@ img {
     font-size: 16px !important;
   }
 
-  .tabsOuter,
-  .tabsWrap {
+  .tabsOuter {
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
   }
 
+  .tabsWrap {
+    width: auto;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
   .tabs {
     display: flex;
-    width: 100%;
+    float: none !important;
+    width: max-content;
     max-width: 100%;
-    margin: 10px 0;
+    min-width: 0;
+    margin: 10px auto;
     overflow: hidden;
   }
 
   .tabs li {
-    flex: 1 1 0;
+    display: block;
+    float: none !important;
+    flex: 0 1 auto;
     width: auto;
     min-width: 0;
     max-width: none;
   }
 
   .tabs a {
-    width: 100%;
-    min-height: 34px;
-    height: 34px;
-    padding: 3px 2px;
-    font-size: clamp(9px, 2.7vw, 11px);
-    line-height: 1.1;
-    white-space: normal;
+    width: auto;
+    min-height: 0;
+    height: auto;
+    padding: 6px 3px;
+    font-size: clamp(9px, 2.7vw, 12px);
+    line-height: 1.2;
+    white-space: nowrap;
     overflow: hidden;
-    text-overflow: clip;
-  }
-}
-
-/* The desktop strip keeps its intrinsic button widths. */
-@media (min-width: 601px) {
-  .tabs {
-    width: max-content;
-  }
-
-  .tabsWrap {
-    width: max-content;
-    min-width: 100%;
+    text-overflow: ellipsis;
   }
 }
 
