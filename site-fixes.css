@@ -66,11 +66,13 @@ img {
   .tabsOuter {
     width: 100%;
     max-width: 100%;
+    clear: both;
+    padding-bottom: 8px;
     overflow: visible;
   }
 
   .tabsWrap {
-    display: block;
+    display: flow-root;
     width: 100%;
     max-width: 100%;
     overflow: visible;
@@ -83,6 +85,7 @@ img {
     width: max-content;
     max-width: calc(100% - 20px);
     min-width: 0;
+    height: auto !important;
     margin: 10px auto;
     overflow: visible;
   }
@@ -106,6 +109,12 @@ img {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* The legacy pages pull the next section upward with a negative margin;
+     that becomes an overlap once the navigation wraps onto two rows. */
+  .listView {
+    margin-bottom: 0 !important;
   }
 }
 
