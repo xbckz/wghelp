@@ -888,7 +888,7 @@ function displayResults(result) {
         <img src="upkeep.png" style="width:20px; height:20px;" />
         <span style="color:white; margin:0; font-size:13px;"><strong>Total Upkeep:</strong> ${formatNumber(result.totalUpkeep)}</span>
       </div>
-      <div style="color:white; font-size:13px;"><strong>Budget remaining:</strong> ${formatNumber(result.remainingUpkeep)}</div>
+      <div style="color:white; font-size:13px;"><strong>Upkeep budget remaining:</strong> ${formatNumber(result.remainingUpkeep)}</div>
       <div style="color:white; font-size:13px;"><strong>Alliance used:</strong> ${formatNumber(result.activeAllianceMembers)} of ${formatNumber(result.allianceSize)} (level cap)</div>
       <div style="color:white; font-size:13px;"><strong>Slots:</strong> ${formatNumber(result.slotLimits.infantry)} infantry · ${formatNumber(result.slotLimits.vehicles)} vehicles · ${formatNumber(result.slotLimits.aircraft)} aircraft</div>
     </div>
