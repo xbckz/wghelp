@@ -4,25 +4,36 @@
 <base href="../">
 <meta charset="UTF-8">
 <link rel="icon" href="favicon.ico" type="image/x-icon">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>About War Game by Evil Grog Games | Wiki &amp; Mobile Guide | WG Helper</title>
-<meta name="description" content="Learn about WG Helper, an independent community wiki for War Game by Evil Grog Games with mobile war game troop stats, building guides, unlock levels and calculators.">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="author" content="WGHelp">
+<title>War Game Mobile Wiki by Evil Grog Games | WG Helper</title>
+<meta name="description" content="WG Helper is an independent War Game mobile wiki for Evil Grog Games: troop stats, building guides, unlock levels, strategy tips and calculators.">
 <meta name="theme-color" content="#151515">
+<link rel="preload" as="image" href="header.webp" type="image/webp" fetchpriority="high">
 <link rel="canonical" href="https://www.wghelp.xyz/about/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="WG Helper">
-<meta property="og:title" content="About War Game by Evil Grog Games | WG Helper">
-<meta property="og:description" content="An independent War Game mobile wiki with troop stats, building guides, unlock levels and practical calculators.">
+<meta property="og:title" content="War Game Mobile Wiki by Evil Grog Games | WG Helper">
+<meta property="og:description" content="WG Helper is an independent War Game mobile wiki for Evil Grog Games: troop stats, building guides, unlock levels, strategy tips and calculators.">
 <meta property="og:url" content="https://www.wghelp.xyz/about/">
+<meta property="og:image" content="https://www.wghelp.xyz/intro3.webp">
+<meta property="og:image:alt" content="War Game by Evil Grog Games wiki and calculator guide">
+<meta property="og:image:width" content="639">
+<meta property="og:image:height" content="360">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="War Game Mobile Wiki by Evil Grog Games | WG Helper">
+<meta name="twitter:description" content="Independent War Game mobile wiki with troop stats, building guides, unlock levels and calculators.">
+<meta name="twitter:image" content="https://www.wghelp.xyz/intro3.webp">
+<meta name="twitter:image:alt" content="War Game by Evil Grog Games wiki and calculator guide">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "AboutPage",
   "@id": "https://www.wghelp.xyz/about/#webpage",
   "url": "https://www.wghelp.xyz/about/",
-  "name": "About War Game by Evil Grog Games | WG Helper",
-  "description": "An independent community wiki for War Game by Evil Grog Games with mobile war game troop stats, building guides, unlock levels and calculators.",
+  "name": "War Game Mobile Wiki by Evil Grog Games | WG Helper",
+  "description": "WG Helper is an independent War Game mobile wiki for Evil Grog Games: troop stats, building guides, unlock levels, strategy tips and calculators.",
   "isPartOf": {
     "@type": "WebSite",
     "name": "WG Helper",
@@ -46,24 +57,42 @@
     },
     {
       "@type": "Question",
-      "name": "What can I find in this War Game mobile wiki?",
+      "name": "Where can I find War Game troop stats?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "You can browse War Game troop stats for soldiers, machinery and aeroplanes, building information, unlock levels, strategy tips and calculators for army, defense, income and price predictions."
+        "text": "Start with the soldiers, machinery or aeroplanes pages. Each category contains available unit information, including combat values, upkeep and unlock levels where known."
       }
     },
     {
       "@type": "Question",
-      "name": "Is WG Helper the official War Game website?",
+      "name": "Can I use WG Helper on my phone?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "WG Helper is an independent community wiki and calculator collection. Evil Grog Games owns the game and the referenced visual assets; visit the official Evil Grog Games website for official information."
+        "text": "Yes. WG Helper is designed as a mobile-friendly War Game wiki, so troop lists, building guides and calculators can be used from a phone or desktop browser."
       }
     }
   ]
 }
 </script>
 <style>
+.skip-link {
+  position: absolute;
+  top: 10px;
+  left: -9999px;
+  z-index: 10;
+  padding: 8px 12px;
+  border: 1px solid #c79b52;
+  border-radius: 4px;
+  background: #191a18;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.skip-link:focus {
+  left: 12px;
+}
+
 @media (max-width: 800px) {
   body {
     background-attachment: scroll !important;
@@ -147,7 +176,8 @@ body::after {
 }
 
 .about-page h1,
-.about-page h2 {
+.about-page h2,
+.about-page h3 {
   color: #fff;
   font-family: Georgia, "Times New Roman", serif;
   font-weight: 700;
@@ -164,6 +194,11 @@ body::after {
   padding-bottom: 8px;
   border-bottom: 1px solid rgba(190, 168, 119, 0.7);
   font-size: clamp(22px, 3.5vw, 30px);
+}
+
+.about-page h3 {
+  margin: 22px 0 6px;
+  font-size: clamp(18px, 2.8vw, 22px);
 }
 
 .about-page p,
@@ -316,17 +351,18 @@ body::after {
 <link rel="stylesheet" href="site-fixes.css?v=20260930-5">
 </head>
 <body>
+<a class="skip-link" href="#main-content">Skip to main content</a>
 <div class="header-text">WG Helper</div>
 
-<div class="header-row">
+<header class="header-row" aria-label="WG Helper site header">
   <div class="header_ext"></div>
   <img src="header.webp" alt="WG Helper header" class="header" width="185" height="102" fetchpriority="high" decoding="async">
   <div class="header_ext"></div>
-</div>
+</header>
 
-<main class="about-page">
+<main id="main-content" class="about-page" aria-labelledby="page-title">
   <a class="back-home" href="../">WG Helper home</a>
-  <h1>About War Game by Evil Grog Games</h1>
+  <h1 id="page-title">About War Game by Evil Grog Games</h1>
   <p class="lead">WG Helper is an independent community wiki and calculator collection for War Game by Evil Grog Games. It is built for players looking for a clear War Game mobile reference with troop stats, building information, unlock levels, strategy guides and planning tools.</p>
   <a class="download-link" href="https://evilgrog.com/war-game/" target="_blank" rel="noopener noreferrer">Download War Game</a>
 
