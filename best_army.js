@@ -112,6 +112,119 @@ const UNIT_TYPE_LABELS = {
   aircraft: 'Aircraft'
 };
 
+// Purchase prices copied from the game's Buy controls for the supplied
+// account. War-loot specials have no Buy price and are intentionally absent
+// because the calculator only considers level-unlocked regular troops.
+const UNIT_PURCHASE_PRICES = {
+  infantry: {
+    Recruit: 35,
+    Guard: 25,
+    'Foot Soldier': 100,
+    Militia: 175,
+    Infantryman: 220,
+    Guardman: 450,
+    Grenadier: 1300,
+    'Lance Corporal': 3400,
+    Paratrooper: 10000,
+    Flamethrower: 12000,
+    'Military Police': 17000,
+    'Frogman Marine': 20000,
+    Artillerist: 30000,
+    Partisan: 42000,
+    Sniper: 55000,
+    'Mountain Infantry': 60000,
+    'Mechanised Infantry': 80000,
+    'Commando Unit': 90000,
+    'Combat Engineer': 120000,
+    'Special Forces Unit': 125000,
+    'Mobile Infantry': 165000,
+    Elite: 190000,
+    Commander: 200000,
+    Officer: 230000,
+    'Hi-tech Soldier': 300000,
+    'Super Warrior': 380000,
+    'Drone Pilot': 590000,
+    'Pathfinder TX': 800000,
+    'Bomb Disposal': 1000000,
+    'Field Mechanic': 1460000,
+    'Jetpack Pilot': 1660000,
+    Infiltrator: 2280000,
+    Exoskeleton: 2560000,
+    'Cyborg Veteran': 3200000,
+    'Chem Berserker': 4070000,
+    Lamprey: 4830000,
+    'Arctic Wolf': 6440000,
+    Aquanaut: 7490000,
+    'D-800': 8520000,
+    'Gen Soldier': 9500000
+  },
+  vehicles: {
+    Motorbike: 100,
+    Jeep: 250,
+    Truck: 530,
+    M113: 2170,
+    'Reconnaissance Drone': 4330,
+    'B1 Centauro': 13330,
+    'Light Artillery': 28330,
+    Hovercraft: 41670,
+    Luchs: 66670,
+    'Anti-air Weaponry': 108330,
+    'Weaponised Drones': 160000,
+    Howitzer: 200000,
+    'M-84': 233330,
+    ZBD97: 316670,
+    'Multiple Rocket Launcher': 416670,
+    Corvette: 466670,
+    'T-90': 500000,
+    'Short-range Ballistic Missile': 600000,
+    'M1 Abrams': 750000,
+    'SDI Laser': 833330,
+    Railgun: 1000000,
+    'Gauss Tank': 1166670,
+    Camotransporter: 2000000,
+    'Microwave Tank': 2900000,
+    'EMP Sensor': 3900000,
+    'Battle Walker': 5100000,
+    'Drone Swarm': 6200000,
+    'Commando Tank': 7400000,
+    'Mech Titan': 9800000,
+    'Canis Cursor': 12000000,
+    'Nano Krill': 17000000,
+    'Aqua Hunter': 17600000,
+    'Kraken Bomb': 20000000,
+    'Hammerhead Shark Transporter': 28000000,
+    'Manta Ray': 30700000
+  },
+  aircraft: {
+    'MiG-23': 7500,
+    Phantom: 23000,
+    AWACS: 50000,
+    'F-16': 75000,
+    'Jak-38': 600000,
+    Mirage: 1000000,
+    Harrier: 1200000,
+    'MiG-29': 2200000,
+    Hornet: 3800000,
+    Apache: 6000000,
+    Eurofighter: 8200000,
+    Nighthawk: 10000000,
+    'F-35 Lightning II': 12500000,
+    Gunship: 14000000,
+    'MH-53E': 30000000,
+    'Boeing V-22': 44000000,
+    'Ikarus S.U.I.T.': 87000000,
+    'Orbital Headquarters': 127000000,
+    'Orbital Troop Transporter': 150000000,
+    'Ion Cannon': 200000000,
+    Sunspear: 320500000,
+    'Orbital Missile Defence': 500000000
+  }
+};
+
+function getUnitPurchasePrice(unit, unitType) {
+  return UNIT_PURCHASE_PRICES[unitType]?.[unit.name] ?? 0;
+}
+
 // Get the value of one unit for the selected objective.
 function getUnitValue(unit, optimizeType) {
   if (optimizeType === 'attack') return unit.attack;
@@ -542,6 +655,7 @@ function calculateBestArmy(
       type: UNIT_TYPE_LABELS[info.unitType],
       quantity: info.maxSlots,
       maxSlots: info.maxSlots,
+      price: getUnitPurchasePrice(info.strongestUnit, info.unitType),
       totalUpkeep: info.maxSlots * info.strongestUnit.upkeep,
       totalAttack: info.maxSlots * info.strongestUnit.attack,
       totalDefense: info.maxSlots * info.strongestUnit.defense
@@ -594,6 +708,7 @@ function calculateBestArmy(
         type: UNIT_TYPE_LABELS[info.unitType],
         quantity,
         maxSlots: info.maxSlots,
+        price: getUnitPurchasePrice(unit, info.unitType),
         totalUpkeep: quantity * unit.upkeep,
         totalAttack: quantity * unit.attack,
         totalDefense: quantity * unit.defense
@@ -630,6 +745,7 @@ function buildArmyResult(
     remainingUpkeep: upkeepBudget - totalUpkeep,
     totalAttack: army.reduce((sum, unit) => sum + unit.totalAttack, 0),
     totalDefense: army.reduce((sum, unit) => sum + unit.totalDefense, 0),
+    totalPrice: army.reduce((sum, unit) => sum + unit.quantity * unit.price, 0),
     totalUpkeep,
     upkeepBudget,
     optimizeType,
@@ -765,6 +881,10 @@ function displayResults(result) {
         <span style="color:white; margin:0; font-size:13px;"><strong>Total Defense:</strong> ${formatNumber(result.totalDefense)}</span>
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
+        <img src="money.png" alt="Money" style="width:20px; height:20px;" />
+        <span style="color:white; margin:0; font-size:13px;"><strong>Total Price:</strong> ${formatNumber(result.totalPrice)}</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:6px;">
         <img src="upkeep.png" style="width:20px; height:20px;" />
         <span style="color:white; margin:0; font-size:13px;"><strong>Total Upkeep:</strong> ${formatNumber(result.totalUpkeep)}</span>
       </div>
@@ -846,7 +966,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('best_army.js?v=20260930-2');
+    worker = new Worker('best_army.js?v=20260930-3');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;
