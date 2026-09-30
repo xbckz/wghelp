@@ -966,7 +966,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('best_army.js?v=20260930-3');
+    worker = new Worker('best_army.js?v=20260930-4');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;
