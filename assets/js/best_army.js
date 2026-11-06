@@ -333,17 +333,17 @@ function seedSearch(items, slotLimits, budget) {
     if (bestUpgrade.source.itemIndex >= 0) {
       upgradeCounts[bestUpgrade.source.itemIndex] -= quantity;
     }
+    const itemIndex = items.indexOf(bestUpgrade.target);
     const targetState = currentByType[bestUpgrade.target.type].find(
-      state => state.cost === bestUpgrade.target.cost && state.value === bestUpgrade.target.value
+      state => state.itemIndex === itemIndex
     );
     if (targetState) targetState.count += quantity;
     else currentByType[bestUpgrade.target.type].push({
       cost: bestUpgrade.target.cost,
       value: bestUpgrade.target.value,
       count: quantity,
-      itemIndex: items.indexOf(bestUpgrade.target)
+      itemIndex
     });
-    const itemIndex = items.indexOf(bestUpgrade.target);
     upgradeCounts[itemIndex] += quantity;
     remainingBudget -= quantity * bestUpgrade.cost;
     upgradeValue += quantity * bestUpgrade.value;
@@ -377,10 +377,39 @@ function seedSearch(items, slotLimits, budget) {
   return best;
 }
 
+// Express a finite nonnegative multiplier as an exact rational. Floating-point
+// arithmetic may guide the choice of multiplier, but must never decide whether
+// an integer solution is discarded. Every nonnegative multiplier gives a valid
+// upper bound, so its decimal representation need not be the optimum multiplier.
+function armyMultiplierFraction(lambda) {
+  const [mantissa, exponent] = lambda.toExponential(17).split('e');
+  const power = Number(exponent) - 17;
+  const digits = BigInt(mantissa.replace('.', ''));
+  return power >= 0
+    ? { numerator: digits * 10n ** BigInt(power), denominator: 1n }
+    : { numerator: digits, denominator: 10n ** BigInt(-power) };
+}
+
+function exactArmyRelaxation(items, startIndex, budget, slotLimits, lambda) {
+  const { numerator, denominator } = armyMultiplierFraction(lambda);
+  const maxNetByType = Object.fromEntries(UNIT_TYPES.map(type => [type, 0n]));
+  const netValues = [];
+  for (let index = startIndex; index < items.length; index += 1) {
+    const item = items[index];
+    const net = BigInt(item.value) * denominator - numerator * BigInt(item.cost);
+    netValues[index] = net;
+    if (net > maxNetByType[item.type]) maxNetByType[item.type] = net;
+  }
+  let bound = numerator * BigInt(budget);
+  for (const type of UNIT_TYPES) {
+    bound += BigInt(slotLimits[type] || 0) * maxNetByType[type];
+  }
+  return { bound, denominator, maxNetByType, netValues };
+}
+
 // Exact integer branch-and-bound search across all three slot pools and the
-// one shared upkeep budget. The upper bound is deliberately conservative:
-// one bound ignores slot limits, another ignores the budget, and their minimum
-// is still guaranteed to be at least as large as every feasible completion.
+// one shared upkeep budget. Slot and rational Lagrangian bounds are always at
+// least as large as every feasible integer completion.
 function optimizeArmyItems(items, slotLimits, budget) {
   const originalItems = items;
   const bestSeed = seedSearch(originalItems, slotLimits, budget);
@@ -436,29 +465,28 @@ function optimizeArmyItems(items, slotLimits, budget) {
   const lowDual = lagrangianAt(lambdaLow);
   const highDual = lagrangianAt(lambdaHigh);
   const lambda = lowDual.bound <= highDual.bound ? lambdaLow : lambdaHigh;
-  const dual = lowDual.bound <= highDual.bound ? lowDual : highDual;
-  const improvementGap = dual.bound - bestValue;
+  const dual = exactArmyRelaxation(originalItems, 0, budget, slotLimits, lambda);
+  let improvementGap = dual.bound - BigInt(bestValue + 1) * dual.denominator;
 
   // The objective is integral. If the upper bound rounds down to the
   // incumbent, the incumbent is already proven optimal.
-  if (Math.floor(dual.bound + 1e-9) <= bestValue) {
+  if (improvementGap < 0n) {
     return { value: bestValue, counts: bestCounts, nodesVisited: 0, exact: true };
   }
 
   const keepIndexes = [];
   for (let index = 0; index < originalItems.length; index += 1) {
     const item = originalItems[index];
-    const loss = dual.maxNetByType[item.type]
-      - (item.value - lambda * item.cost);
-    if ((bestSeed.counts[index] || 0) > 0 || loss < improvementGap - 1e-9) {
+    const loss = dual.maxNetByType[item.type] - dual.netValues[index];
+    if ((bestSeed.counts[index] || 0) > 0 || loss <= improvementGap) {
       keepIndexes.push(index);
     }
   }
 
   items = keepIndexes.map(index => originalItems[index]);
   bestCounts = keepIndexes.map(index => bestSeed.counts[index] || 0);
-  const itemLosses = items.map(item => (
-    dual.maxNetByType[item.type] - (item.value - lambda * item.cost)
+  const itemLosses = keepIndexes.map(index => (
+    dual.maxNetByType[originalItems[index].type] - dual.netValues[index]
   ));
   const expandCounts = counts => {
     const expanded = Array(originalItems.length).fill(0);
@@ -477,10 +505,14 @@ function optimizeArmyItems(items, slotLimits, budget) {
   const suffixMaxDensity = Object.fromEntries(
     categories.map(type => [type, Array(items.length + 1).fill(0)])
   );
+  const suffixMaxNet = Object.fromEntries(
+    categories.map(type => [type, Array(items.length + 1).fill(0n)])
+  );
   for (let index = items.length - 1; index >= 0; index -= 1) {
     for (const type of categories) {
       suffixMaxValue[type][index] = suffixMaxValue[type][index + 1];
       suffixMaxDensity[type][index] = suffixMaxDensity[type][index + 1];
+      suffixMaxNet[type][index] = suffixMaxNet[type][index + 1];
     }
     const item = items[index];
     suffixMaxValue[item.type][index] = Math.max(
@@ -489,6 +521,8 @@ function optimizeArmyItems(items, slotLimits, budget) {
     suffixMaxDensity[item.type][index] = Math.max(
       suffixMaxDensity[item.type][index], item.ratio
     );
+    const net = dual.netValues[keepIndexes[index]];
+    if (net > suffixMaxNet[item.type][index]) suffixMaxNet[item.type][index] = net;
   }
 
   function upperBound(startIndex, remainingBudget, remainingSlots) {
@@ -507,31 +541,10 @@ function optimizeArmyItems(items, slotLimits, budget) {
         : max
     ), 0);
     if (maxDensity === 0) return 0;
-    const budgetBound = remainingBudget * maxDensity;
     const slotBound = categories.reduce(
       (sum, type) => sum + (remainingSlots[type] || 0) * suffixMaxValue[type][startIndex],
       0
     );
-    const perCategoryBound = categories.reduce((sum, type) => {
-      const slots = remainingSlots[type] || 0;
-      const categoryDensity = suffixMaxDensity[type][startIndex];
-      const categoryValue = suffixMaxValue[type][startIndex];
-      return sum + Math.min(slots * categoryValue, remainingBudget * categoryDensity);
-    }, 0);
-
-    const relaxedBound = lambda => {
-      let bound = lambda * remainingBudget;
-      for (const type of categories) {
-        const slots = remainingSlots[type] || 0;
-        let bestRelaxedValue = 0;
-        for (const item of activeItemsByType[type]) {
-          bestRelaxedValue = Math.max(bestRelaxedValue, item.value - lambda * item.cost);
-        }
-        bound += slots * bestRelaxedValue;
-      }
-      return bound;
-    };
-
     let lambdaLow = 0;
     let lambdaHigh = maxDensity;
     for (let iteration = 0; iteration < 20; iteration += 1) {
@@ -553,18 +566,19 @@ function optimizeArmyItems(items, slotLimits, budget) {
       if (remainingBudget > selectedCost) lambdaHigh = lambda;
       else lambdaLow = lambda;
     }
-    const lagrangianBound = Math.min(relaxedBound(lambdaLow), relaxedBound(lambdaHigh));
-
-    return Math.min(budgetBound, slotBound, perCategoryBound, lagrangianBound);
+    const low = exactArmyRelaxation(items, startIndex, remainingBudget, remainingSlots, lambdaLow);
+    const high = exactArmyRelaxation(items, startIndex, remainingBudget, remainingSlots, lambdaHigh);
+    return Math.min(slotBound, Number(low.bound / low.denominator), Number(high.bound / high.denominator));
   }
 
   function search(index, remainingBudget, remainingSlots, value, lagrangianLoss) {
     nodesVisited += 1;
-    if (lagrangianLoss >= improvementGap - 1e-9) return;
+    if (lagrangianLoss > improvementGap) return;
     if (index >= items.length) {
       if (value > bestValue) {
         bestValue = value;
         bestCounts = [...currentCounts];
+        improvementGap = dual.bound - BigInt(bestValue + 1) * dual.denominator;
       }
       return;
     }
@@ -572,12 +586,39 @@ function optimizeArmyItems(items, slotLimits, budget) {
     if (value + upperBound(index, remainingBudget, remainingSlots) <= bestValue) return;
 
     const item = items[index];
-    const maximum = Math.min(
+    let maximum = Math.min(
       remainingSlots[item.type] || 0,
       Math.floor(remainingBudget / item.cost)
     );
+    let minimum = 0;
 
-    for (let quantity = maximum; quantity >= 0; quantity -= 1) {
+    // Account for the cheapest possible relaxation loss in every remaining
+    // slot, including free baseline slots. This gives an exact interval of
+    // quantities that could still improve the incumbent and avoids enumerating
+    // thousands of quantities that cannot possibly win for large alliances.
+    let unavoidableLoss = lagrangianLoss;
+    for (const type of categories) {
+      unavoidableLoss += BigInt(remainingSlots[type] || 0)
+        * (dual.maxNetByType[type] - suffixMaxNet[type][index + 1]);
+    }
+    const quantityLoss = itemLosses[index]
+      - (dual.maxNetByType[item.type] - suffixMaxNet[item.type][index + 1]);
+    if (quantityLoss > 0n) {
+      if (unavoidableLoss > improvementGap) return;
+      maximum = Math.min(maximum, Number((improvementGap - unavoidableLoss) / quantityLoss));
+    } else if (quantityLoss < 0n && unavoidableLoss > improvementGap) {
+      const needed = unavoidableLoss - improvementGap;
+      const saving = -quantityLoss;
+      minimum = Number((needed + saving - 1n) / saving);
+    } else if (quantityLoss === 0n && unavoidableLoss > improvementGap) {
+      return;
+    }
+
+    for (let quantity = maximum; quantity >= minimum; quantity -= 1) {
+      if (unavoidableLoss + BigInt(quantity) * quantityLoss > improvementGap) {
+        if (quantityLoss <= 0n) break;
+        continue;
+      }
       currentCounts[index] = quantity;
       remainingSlots[item.type] -= quantity;
       search(
@@ -585,14 +626,14 @@ function optimizeArmyItems(items, slotLimits, budget) {
         remainingBudget - quantity * item.cost,
         remainingSlots,
         value + quantity * item.value,
-        lagrangianLoss + quantity * itemLosses[index]
+        lagrangianLoss + BigInt(quantity) * itemLosses[index]
       );
       remainingSlots[item.type] += quantity;
     }
     currentCounts[index] = 0;
   }
 
-  search(0, budget, { ...slotLimits }, 0, 0);
+  search(0, budget, { ...slotLimits }, 0, 0n);
   return {
     value: bestValue,
     counts: expandCounts(bestCounts),
@@ -605,15 +646,27 @@ function calculateBestArmy(
   playerLevel,
   upkeepBudget,
   allianceSize,
-  optimizeType,
-  unitTypeFilter,
-  searchOptions = {}
+  optimizeType = 'balanced',
+  unitTypeFilter = 'all'
 ) {
+  if (!Number.isSafeInteger(playerLevel) || playerLevel < 1 || playerLevel > 350) {
+    throw new RangeError('Please enter a whole player level from 1 to 350.');
+  }
+  if (!Number.isSafeInteger(upkeepBudget) || upkeepBudget < 0) {
+    throw new RangeError('Please enter a whole upkeep budget from 0 to 9,007,199,254,740,991.');
+  }
+  if (!Number.isSafeInteger(allianceSize) || allianceSize < 1) {
+    throw new RangeError('Please enter a whole alliance size from 1 to 9,007,199,254,740,991.');
+  }
+  if (!['attack', 'defense', 'balanced'].includes(optimizeType)) {
+    throw new RangeError('Please choose attack, defense, or balanced.');
+  }
+  if (unitTypeFilter !== 'all' && !UNIT_TYPES.includes(unitTypeFilter)) {
+    throw new RangeError('Please choose a valid unit type.');
+  }
   const slotLimits = calculateSlotLimits(playerLevel, allianceSize);
   const typesToInclude = unitTypeFilter === 'all' ? UNIT_TYPES : [unitTypeFilter];
   const categoryInfo = [];
-  let baselineObjective = 0;
-  let baselineUpkeep = 0;
   let fullArmyCost = 0;
   const items = [];
 
@@ -626,8 +679,6 @@ function calculateBestArmy(
     const baseUnit = bestUnit(freeUnits.length ? freeUnits : availableUnits, optimizeType);
     const strongestUnit = bestUnit(availableUnits, optimizeType);
     const baseValue = getUnitValue(baseUnit, optimizeType);
-    baselineObjective += maxSlots * baseValue;
-    baselineUpkeep += maxSlots * baseUnit.upkeep;
     fullArmyCost += maxSlots * strongestUnit.upkeep;
 
     categoryInfo.push({ unitType, maxSlots, baseUnit, strongestUnit });
@@ -675,8 +726,7 @@ function calculateBestArmy(
   const searchResult = optimizeArmyItems(
     reducedItems,
     slotLimits,
-    Math.max(0, upkeepBudget - baselineUpkeep),
-    searchOptions
+    upkeepBudget
   );
   const quantities = new Map();
   const paidSlotsByType = Object.fromEntries(UNIT_TYPES.map(type => [type, 0]));
@@ -716,6 +766,16 @@ function calculateBestArmy(
     }
   }
 
+  const expectedObjective = categoryInfo.reduce((sum, info) => (
+    sum + info.maxSlots * getUnitValue(info.baseUnit, optimizeType)
+  ), searchResult.value);
+  const actualObjective = army.reduce((sum, unit) => (
+    sum + unit.quantity * getUnitValue(unit, optimizeType)
+  ), 0);
+  if (actualObjective !== expectedObjective) {
+    throw new Error('The calculated troop quantities do not match the optimized total.');
+  }
+
   return buildArmyResult(
     army,
     slotLimits,
@@ -736,7 +796,29 @@ function buildArmyResult(
   nodesVisited,
   exact = true
 ) {
+  const usedSlots = Object.fromEntries(Object.values(UNIT_TYPE_LABELS).map(type => [type, 0]));
+  const names = new Set();
+  for (const unit of army) {
+    const key = `${unit.type}:${unit.name}`;
+    if (!Number.isSafeInteger(unit.quantity) || unit.quantity <= 0 ||
+        !(unit.type in usedSlots) || names.has(key) ||
+        unit.totalAttack !== unit.quantity * unit.attack ||
+        unit.totalDefense !== unit.quantity * unit.defense ||
+        unit.totalUpkeep !== unit.quantity * unit.upkeep) {
+      throw new Error('The calculated army contains invalid troop quantities or totals.');
+    }
+    names.add(key);
+    usedSlots[unit.type] += unit.quantity;
+  }
+  for (const type of UNIT_TYPES) {
+    if (usedSlots[UNIT_TYPE_LABELS[type]] > slotLimits[type]) {
+      throw new Error('The calculated army exceeds the combat slot limit.');
+    }
+  }
   const totalUpkeep = army.reduce((sum, unit) => sum + unit.totalUpkeep, 0);
+  if (!Number.isSafeInteger(totalUpkeep) || totalUpkeep < 0 || totalUpkeep > upkeepBudget) {
+    throw new Error('The calculated army exceeds the upkeep budget.');
+  }
   return {
     army,
     slotLimits,
@@ -785,45 +867,45 @@ function displayResults(result) {
   // Map unit names to image files
   const getUnitImage = (unitName, unitType) => {
     const infantryMap = {
-      "Recruit": "101.jpg", "Guard": "102.jpg", "Foot Soldier": "103.jpg", "Militia": "104.jpg",
-      "Infantryman": "105.jpg", "Guardman": "106.jpg", "Grenadier": "107.jpg", "Lance Corporal": "108.jpg",
-      "Paratrooper": "109.jpg", "Flamethrower": "110.jpg", "Military Police": "111.jpg", "Frogman Marine": "112.jpg",
-      "Artillerist": "113.jpg", "Partisan": "114.jpg", "Sniper": "115.jpg", "Mountain Infantry": "116.jpg",
-      "Mechanised Infantry": "117.jpg", "Commando Unit": "118.jpg", "Combat Engineer": "119.jpg",
-      "Special Forces Unit": "120.jpg", "Mobile Infantry": "121.jpg", "Elite": "122.jpg", "Commander": "123.jpg",
-      "Officer": "124.jpg", "Hi-tech Soldier": "125.jpg", "Super Warrior": "126.jpg", "Drone Pilot": "127.jpg",
-      "Pathfinder TX": "128.jpg", "Bomb Disposal": "129.jpg", "Field Mechanic": "130.jpg", "Jetpack Pilot": "131.jpg",
-      "Infiltrator": "132.jpg", "Exoskeleton": "133.jpg", "Cyborg Veteran": "134.jpg", "Chem Berserker": "135.jpg",
-      "Lamprey": "136.jpg", "Arctic Wolf": "137.jpg", "Aquanaut": "138.jpg", "D-800": "139.jpg", "Gen Soldier": "140.jpg"
+      "Recruit": "assets/images/items/101.jpg", "Guard": "assets/images/items/102.jpg", "Foot Soldier": "assets/images/items/103.jpg", "Militia": "assets/images/items/104.jpg",
+      "Infantryman": "assets/images/items/105.jpg", "Guardman": "assets/images/items/106.jpg", "Grenadier": "assets/images/items/107.jpg", "Lance Corporal": "assets/images/items/108.jpg",
+      "Paratrooper": "assets/images/items/109.jpg", "Flamethrower": "assets/images/items/110.jpg", "Military Police": "assets/images/items/111.jpg", "Frogman Marine": "assets/images/items/112.jpg",
+      "Artillerist": "assets/images/items/113.jpg", "Partisan": "assets/images/items/114.jpg", "Sniper": "assets/images/items/115.jpg", "Mountain Infantry": "assets/images/items/116.jpg",
+      "Mechanised Infantry": "assets/images/items/117.jpg", "Commando Unit": "assets/images/items/118.jpg", "Combat Engineer": "assets/images/items/119.jpg",
+      "Special Forces Unit": "assets/images/items/120.jpg", "Mobile Infantry": "assets/images/items/121.jpg", "Elite": "assets/images/items/122.jpg", "Commander": "assets/images/items/123.jpg",
+      "Officer": "assets/images/items/124.jpg", "Hi-tech Soldier": "assets/images/items/125.jpg", "Super Warrior": "assets/images/items/126.jpg", "Drone Pilot": "assets/images/items/127.jpg",
+      "Pathfinder TX": "assets/images/items/128.jpg", "Bomb Disposal": "assets/images/items/129.jpg", "Field Mechanic": "assets/images/items/130.jpg", "Jetpack Pilot": "assets/images/items/131.jpg",
+      "Infiltrator": "assets/images/items/132.jpg", "Exoskeleton": "assets/images/items/133.jpg", "Cyborg Veteran": "assets/images/items/134.jpg", "Chem Berserker": "assets/images/items/135.jpg",
+      "Lamprey": "assets/images/items/136.jpg", "Arctic Wolf": "assets/images/items/137.jpg", "Aquanaut": "assets/images/items/138.jpg", "D-800": "assets/images/items/139.jpg", "Gen Soldier": "assets/images/items/140.jpg"
     };
     
     const vehiclesMap = {
-      "Motorbike": "1001.jpg", "Jeep": "1002.jpg", "Truck": "1003.jpg", "M113": "1004.jpg",
-      "Reconnaissance Drone": "1005.jpg", "B1 Centauro": "1006.jpg", "Light Artillery": "1007.jpg",
-      "Hovercraft": "1008.jpg", "Luchs": "1009.jpg", "Anti-air Weaponry": "1010.jpg",
-      "Weaponised Drones": "1011.jpg", "Howitzer": "1012.jpg", "M-84": "1013.jpg", "ZBD97": "1014.jpg",
-      "Multiple Rocket Launcher": "1015.jpg", "Corvette": "1016.jpg", "T-90": "1017.jpg",
-      "Short-range Ballistic Missile": "1018.jpg", "M1 Abrams": "1019.jpg", "SDI Laser": "1020.jpg",
-      "Railgun": "1021.jpg", "Gauss Tank": "1022.jpg", "Camotransporter": "1023.jpg",
-      "Microwave Tank": "1024.jpg", "EMP Sensor": "1025.jpg", "Battle Walker": "1026.jpg",
-      "Drone Swarm": "1027.jpg", "Commando Tank": "1028.jpg", "Mech Titan": "1029.jpg",
-      "Canis Cursor": "1030.jpg", "Nano Krill": "1031.jpg", "Aqua Hunter": "1032.jpg",
-      "Kraken Bomb": "1033.jpg", "Hammerhead Shark Transporter": "1034.jpg", "Manta Ray": "1035.jpg"
+      "Motorbike": "assets/images/items/1001.jpg", "Jeep": "assets/images/items/1002.jpg", "Truck": "assets/images/items/1003.jpg", "M113": "assets/images/items/1004.jpg",
+      "Reconnaissance Drone": "assets/images/items/1005.jpg", "B1 Centauro": "assets/images/items/1006.jpg", "Light Artillery": "assets/images/items/1007.jpg",
+      "Hovercraft": "assets/images/items/1008.jpg", "Luchs": "assets/images/items/1009.jpg", "Anti-air Weaponry": "assets/images/items/1010.jpg",
+      "Weaponised Drones": "assets/images/items/1011.jpg", "Howitzer": "assets/images/items/1012.jpg", "M-84": "assets/images/items/1013.jpg", "ZBD97": "assets/images/items/1014.jpg",
+      "Multiple Rocket Launcher": "assets/images/items/1015.jpg", "Corvette": "assets/images/items/1016.jpg", "T-90": "assets/images/items/1017.jpg",
+      "Short-range Ballistic Missile": "assets/images/items/1018.jpg", "M1 Abrams": "assets/images/items/1019.jpg", "SDI Laser": "assets/images/items/1020.jpg",
+      "Railgun": "assets/images/items/1021.jpg", "Gauss Tank": "assets/images/items/1022.jpg", "Camotransporter": "assets/images/items/1023.jpg",
+      "Microwave Tank": "assets/images/items/1024.jpg", "EMP Sensor": "assets/images/items/1025.jpg", "Battle Walker": "assets/images/items/1026.jpg",
+      "Drone Swarm": "assets/images/items/1027.jpg", "Commando Tank": "assets/images/items/1028.jpg", "Mech Titan": "assets/images/items/1029.jpg",
+      "Canis Cursor": "assets/images/items/1030.jpg", "Nano Krill": "assets/images/items/1031.jpg", "Aqua Hunter": "assets/images/items/1032.jpg",
+      "Kraken Bomb": "assets/images/items/1033.jpg", "Hammerhead Shark Transporter": "assets/images/items/1034.jpg", "Manta Ray": "assets/images/items/1035.jpg"
     };
     
     const aircraftMap = {
-      "MiG-23": "2001.jpg", "Phantom": "2002.jpg", "AWACS": "2003.jpg", "F-16": "2004.jpg",
-      "Jak-38": "2005.jpg", "Mirage": "2006.jpg", "Harrier": "2007.jpg", "MiG-29": "2008.jpg",
-      "Hornet": "2009.jpg", "Apache": "2010.jpg", "Eurofighter": "2011.jpg", "Nighthawk": "2012.jpg",
-      "F-35 Lightning II": "2013.jpg", "Gunship": "2014.jpg", "MH-53E": "2115.jpg", "Boeing V-22": "2116.jpg",
-      "Ikarus S.U.I.T.": "2117.jpg", "Orbital Headquarters": "2118.jpg", "Orbital Troop Transporter": "2119.jpg",
-      "Ion Cannon": "2120.jpg", "Sunspear": "2121.jpg", "Orbital Missile Defence": "2122.jpg"
+      "MiG-23": "assets/images/items/2001.jpg", "Phantom": "assets/images/items/2002.jpg", "AWACS": "assets/images/items/2003.jpg", "F-16": "assets/images/items/2004.jpg",
+      "Jak-38": "assets/images/items/2005.jpg", "Mirage": "assets/images/items/2006.jpg", "Harrier": "assets/images/items/2007.jpg", "MiG-29": "assets/images/items/2008.jpg",
+      "Hornet": "assets/images/items/2009.jpg", "Apache": "assets/images/items/2010.jpg", "Eurofighter": "assets/images/items/2011.jpg", "Nighthawk": "assets/images/items/2012.jpg",
+      "F-35 Lightning II": "assets/images/items/2013.jpg", "Gunship": "assets/images/items/2014.jpg", "MH-53E": "assets/images/items/2115.jpg", "Boeing V-22": "assets/images/items/2116.jpg",
+      "Ikarus S.U.I.T.": "assets/images/items/2117.jpg", "Orbital Headquarters": "assets/images/items/2118.jpg", "Orbital Troop Transporter": "assets/images/items/2119.jpg",
+      "Ion Cannon": "assets/images/items/2120.jpg", "Sunspear": "assets/images/items/2121.jpg", "Orbital Missile Defence": "assets/images/items/2122.jpg"
     };
     
-    if (unitType === "Infantry") return infantryMap[unitName] || "101.jpg";
-    if (unitType === "Vehicles") return vehiclesMap[unitName] || "1001.jpg";
-    if (unitType === "Aircraft") return aircraftMap[unitName] || "2001.jpg";
-    return "101.jpg";
+    if (unitType === "Infantry") return infantryMap[unitName] || "assets/images/items/101.jpg";
+    if (unitType === "Vehicles") return vehiclesMap[unitName] || "assets/images/items/1001.jpg";
+    if (unitType === "Aircraft") return aircraftMap[unitName] || "assets/images/items/2001.jpg";
+    return "assets/images/items/101.jpg";
   };
   
   let html = '';
@@ -873,19 +955,19 @@ function displayResults(result) {
   html += `
     <div style="margin-top:12px; padding:10px; border:2px solid rgba(255,255,255,0.2); border-radius:8px; background: rgba(0,0,0,0.25); display:flex; flex-direction:column; gap:5px; width:fit-content;">
       <div style="display:flex; align-items:center; gap:6px;">
-        <img src="att.png" style="width:20px; height:20px;" />
+        <img src="assets/images/ui/att.png" style="width:20px; height:20px;" />
         <span style="color:white; margin:0; font-size:13px;"><strong>Total Attack:</strong> ${formatNumber(result.totalAttack)}</span>
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
-        <img src="def.png" style="width:20px; height:20px;" />
+        <img src="assets/images/ui/def.png" style="width:20px; height:20px;" />
         <span style="color:white; margin:0; font-size:13px;"><strong>Total Defense:</strong> ${formatNumber(result.totalDefense)}</span>
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
-        <img src="money.png" alt="Money" style="width:20px; height:20px;" />
+        <img src="assets/images/ui/money.png" alt="Money" style="width:20px; height:20px;" />
         <span style="color:white; margin:0; font-size:13px;"><strong>Total Price:</strong> ${formatNumber(result.totalPrice)}</span>
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
-        <img src="upkeep.png" style="width:20px; height:20px;" />
+        <img src="assets/images/ui/upkeep.png" style="width:20px; height:20px;" />
         <span style="color:white; margin:0; font-size:13px;"><strong>Total Upkeep:</strong> ${formatNumber(result.totalUpkeep)}</span>
       </div>
       <div style="color:white; font-size:13px;"><strong>Upkeep budget remaining:</strong> ${formatNumber(result.remainingUpkeep)}</div>
@@ -953,7 +1035,7 @@ function displayResults(result) {
 
 function parseArmyNumber(value) {
   const normalized = String(value ?? '').replace(/,/g, '').trim();
-  if (!normalized) return NaN;
+  if (!/^[+-]?(?:\d+\.?\d*|\.\d+)$/.test(normalized)) return NaN;
   const parsed = Number(normalized);
   return Number.isFinite(parsed) ? parsed : NaN;
 }
@@ -966,7 +1048,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('best_army.js?v=20260930-4');
+    worker = new Worker('assets/js/best_army.js?v=20260930-5');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;
@@ -980,7 +1062,13 @@ function calculateInWorker(params, onResult, onError) {
     worker.terminate();
     onError(event.message || 'The army calculation could not be completed.');
   };
-  worker.postMessage(params);
+  try {
+    worker.postMessage(params);
+  } catch (error) {
+    worker.terminate();
+    onError(error?.message || 'The army calculation could not be started.');
+    return null;
+  }
   return worker;
 }
 
@@ -1018,26 +1106,26 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
   }
 
   calculateButton.addEventListener('click', function() {
-    const enteredLevel = parseArmyNumber(levelInput.value) || 0;
-    const playerLevel = Math.min(350, Math.floor(enteredLevel));
+    const enteredLevel = parseArmyNumber(levelInput.value);
+    const playerLevel = Math.min(350, enteredLevel);
     if (enteredLevel > 350) levelInput.value = '350';
-    const upkeepBudget = Math.floor(parseArmyNumber(document.getElementById('upkeep-budget').value) || 0);
-    const allianceSize = Math.floor(parseArmyNumber(document.getElementById('alliance-size').value) || 0);
+    const upkeepBudget = parseArmyNumber(document.getElementById('upkeep-budget').value);
+    const allianceSize = parseArmyNumber(document.getElementById('alliance-size').value);
     const optimizeType = document.getElementById('optimize-type').value;
     const unitTypeFilter = 'all';
 
-    if (playerLevel <= 0) {
-      alert('Please enter a valid player level (1-350).');
+    if (!Number.isSafeInteger(playerLevel) || playerLevel <= 0) {
+      alert('Please enter a whole player level from 1 to 350.');
       return;
     }
 
-    if (upkeepBudget < 0) {
-      alert('Please enter a valid upkeep budget (0 or higher).');
+    if (!Number.isSafeInteger(upkeepBudget) || upkeepBudget < 0) {
+      alert('Please enter a whole upkeep budget from 0 to 9,007,199,254,740,991.');
       return;
     }
 
-    if (allianceSize <= 0) {
-      alert('Please enter a valid alliance size (1 or higher).');
+    if (!Number.isSafeInteger(allianceSize) || allianceSize <= 0) {
+      alert('Please enter a whole alliance size from 1 to 9,007,199,254,740,991.');
       return;
     }
 
@@ -1060,6 +1148,7 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
       },
       message => {
         alert(message);
+        resultsContent.innerHTML = `<div style="color:white;">${escapeHtml(message)}</div>`;
         calculateButton.disabled = false;
         if (buttonLabel) buttonLabel.textContent = 'Calculate Best Army';
         activeWorker = null;

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<link rel="icon" href="favicon.ico" type="image/x-icon">
+<link rel="icon" href="assets/images/ui/favicon.ico" type="image/x-icon">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>War Game Evil Grog Wiki, Calculators &amp; Troop Stats | WG Helper</title>
@@ -12,7 +12,7 @@
 <meta property="og:title" content="War Game Evil Grog Wiki, Calculators &amp; Troop Stats | WG Helper">
 <meta property="og:description" content="Community wiki for War Game by Evil Grog Games with troop stats, building unlock levels, defense and income calculators, guides and more.">
 <meta name="twitter:card" content="summary">
-<link rel="preload" as="image" href="intro3.webp" type="image/webp" fetchpriority="high">
+<link rel="preload" as="image" href="assets/images/ui/intro3.webp" type="image/webp" fetchpriority="high">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -33,18 +33,13 @@
   }
 }
 
-html {
-  margin: 0;
-  padding: 0;
-}
-
-body {
+html,body {
   margin: 0;
   padding: 0;
   background-color: #000;
   width: 100%;
   min-height: 100vh;
-  background-image: url('background.webp');
+  background-image: url('assets/images/ui/background.webp');
   background-repeat: repeat;
   background-size: auto;
   background-position: top left;
@@ -59,7 +54,7 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  background: url('background.webp') repeat top left / auto;
+  background: url('assets/images/ui/background.webp') repeat top left / auto;
   z-index: -1;
 }
 
@@ -74,7 +69,7 @@ body::after {
 .header_ext {
   flex: 1;
   height: 101px;
-  background-image: url('header_ext.webp');
+  background-image: url('assets/images/ui/header_ext.webp');
   background-repeat: repeat-x;
   background-size: contain;
 }
@@ -177,39 +172,58 @@ body::after {
     text-decoration: none;
     color: #fff;
     text-align: center; /* center icon and text */
+    font: 13px/1.3 "Helvetica Neue", Arial, sans-serif;
+}
+
+.commentslist.system-comment .system-comment-type {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin: 0 0 10px;
+    text-align: left;
 }
 
 .commentslist.system-comment li h6 {
-    margin: 0 0 10px 0;
+    position: relative;
+    top: -8px;
+    margin: 0;
     text-transform: uppercase;
-    font-size: 13px;
-    color: #ccc;
+    font: bold 9px/1.3 "Helvetica Neue", Arial, sans-serif;
+    letter-spacing: 2px;
+    color: #e48c00;
     text-align: left; /* top-left "System:" */
 }
 
 .commentslist.system-comment .alert-icon {
-    width: 25px;  /* smaller attention icon */
-    height: 25px;
-    margin: 0 auto 10px auto;
+    flex: 0 0 26px;
+    width: 26px;
+    height: 47px;
+    margin: 0;
     display: block;
+    background-image: url("assets/images/ui/sprite_newsFeed_icons_2x.png");
+    background-repeat: no-repeat;
+    background-position: 0 -200px;
+    background-size: 26px auto;
 }
 
 .commentslist.system-comment li .commentMsg {
     font-weight: bold;
     font-size: 20px;
     margin: 5px 0;
+    font-family: "Times", serif;
+    color: #fff;
 }
 
 
 .commentslist.system-comment li .commentDesc {
-    font-size: 16px;
-    color: #ccc;
+    font: 13px/1.3 "Helvetica Neue", Arial, sans-serif;
+    color: #fff;
     margin: 7px 0 0 0;
 }
 
 .commentslist.system-comment li .commentDescc {
-    font-size: 16px;
-    color: #ccc;
+    font: 13px/1.3 "Helvetica Neue", Arial, sans-serif;
+    color: #fff;
     margin: 20px 0 0 0;
 }
 
@@ -363,46 +377,37 @@ body::after {
   background-color: #111;
 }
 
-.site-footer {
-  padding: 15px;
-  text-align: center;
-  font-size: 14px;
-  color: #8b8b8b;
-}
-.site-footer a {
-  color: inherit;
-  text-decoration: underline;
-}
-.footer-about-link {
-  margin-top: 10px !important;
-}
+
 
 </style>
-<link rel="stylesheet" href="site-fixes.css?v=20260930-5">
+<link rel="stylesheet" href="assets/css/site-fixes.css?v=20260930-5">
 </head>
 
-<body>
 
+<body>
     <div class="header-text">WG Helper</div>
 
     <div class="header-row">
   <div class="header_ext"></div>
-  <img src="header.webp" alt="WG Helper header" class="header" width="185" height="102" fetchpriority="high" decoding="async">
+  <img src="assets/images/ui/header.webp" alt="WG Helper header" class="header" width="185" height="102" fetchpriority="high" decoding="async">
   <div class="header_ext"></div>
 </div>
 
 <div class="intro-wrapper">
-  <img src="intro3.webp" alt="War Game Evil Grog Helper overview" class="intro" width="639" height="360" fetchpriority="high" decoding="async">
+  <img src="assets/images/ui/intro3.webp" alt="War Game Evil Grog Helper overview" class="intro" width="639" height="360" fetchpriority="high" decoding="async">
 </div>
 
 <main>
 <ul class="commentslist system-comment">
     <li>
         <div class="system-comment-content">
-            <h6>System:</h6>
+            <div class="system-comment-type">
+                <span class="alert-icon" aria-hidden="true"></span>
+                <h6>System:</h6>
+            </div>
             
-    <h1 class="commentMsg">War Game by Evil Grog &ndash; Wiki &amp; Calculators</h1>
-    <p class="commentDesc">WG Helper is a community wiki and calculator collection for War Game by Evil Grog Games. Browse troop stats, buildings, unlock levels, defense and income calculators, guides and more.</p>
+            <h1 class="commentMsg">War Game by Evil Grog &ndash; Wiki &amp; Calculators</h1>
+            <p class="commentDesc">WG Helper is a community wiki and calculator collection for War Game by Evil Grog Games. Browse troop stats, buildings, unlock levels, defense and income calculators, guides and more.</p>
             <p class="commentDescc">Explore all of the features below</p>
             
         </div>
@@ -415,10 +420,10 @@ body::after {
   <button type="button" class="toggle" aria-expanded="false" aria-controls="menu-troops">
     <span class="menuTitle">
       <span class="menuLeft">
-        <img src="troops.webp" alt="Troops" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
+        <img src="assets/images/ui/troops.webp" alt="Troops" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
         <strong>Troops</strong>
       </span>
-      <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+      <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
     </span>
   </button>
   <div class="menuContent" id="menu-troops">
@@ -427,7 +432,7 @@ body::after {
         <div class="menuLeft">
           <strong>Soldiers</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
 
@@ -436,7 +441,7 @@ body::after {
         <div class="menuLeft">
           <strong>Machinery</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
 
@@ -445,7 +450,7 @@ body::after {
         <div class="menuLeft">
           <strong>Aeroplanes</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
 
@@ -454,7 +459,7 @@ body::after {
         <div class="menuLeft">
           <strong>Premiums</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
   </div>
@@ -467,10 +472,10 @@ body::after {
   <button type="button" class="toggle" aria-expanded="false" aria-controls="menu-buildings">
     <span class="menuTitle">
       <span class="menuLeft">
-        <img src="buildings.webp" alt="Buildings" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
+        <img src="assets/images/ui/buildings.webp" alt="Buildings" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
         <strong>Buildings</strong>
       </span>
-      <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+      <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
     </span>
   </button>
   <div class="menuContent" id="menu-buildings">
@@ -479,7 +484,7 @@ body::after {
         <div class="menuLeft">
           <strong>Defenses</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
     <a href="income/" class="nestedItem">
@@ -487,7 +492,7 @@ body::after {
         <div class="menuLeft">
           <strong>Income</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
   </div>
@@ -498,10 +503,10 @@ body::after {
   <button type="button" class="toggle" aria-expanded="false" aria-controls="menu-tips">
     <span class="menuTitle">
       <span class="menuLeft">
-        <img src="tips.webp" alt="Tips" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
+        <img src="assets/images/ui/tips.webp" alt="Tips" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
         <strong>Tips</strong>
       </span>
-      <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+      <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
     </span>
   </button>
   <div class="menuContent" id="menu-tips">
@@ -510,7 +515,7 @@ body::after {
         <div class="menuLeft">
           <strong>Basics</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
   </div>
@@ -520,10 +525,10 @@ body::after {
   <button type="button" class="toggle" aria-expanded="false" aria-controls="menu-tools">
     <span class="menuTitle">
       <span class="menuLeft">
-        <img src="tools.webp" alt="Tools" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
+        <img src="assets/images/ui/tools.webp" alt="Tools" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
         <strong>Tools</strong>
       </span>
-      <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+      <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
     </span>
   </button>
   <div class="menuContent" id="menu-tools">
@@ -532,7 +537,7 @@ body::after {
         <div class="menuLeft">
           <strong>Best Value Defense Calc</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
     <a href="best_value_income/" class="nestedItem">
@@ -540,7 +545,7 @@ body::after {
         <div class="menuLeft">
           <strong>Best Value Income Calc</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
     <a href="best_army/" class="nestedItem">
@@ -548,7 +553,7 @@ body::after {
         <div class="menuLeft">
           <strong>Best Army Calc</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
     <a href="price_predict_def/" class="nestedItem">
@@ -556,7 +561,7 @@ body::after {
         <div class="menuLeft">
           <strong>Price Prediction Defense</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
     <a href="price_predict_inc/" class="nestedItem">
@@ -564,7 +569,7 @@ body::after {
         <div class="menuLeft">
           <strong>Price Prediction Income</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
   </div>
@@ -574,13 +579,24 @@ body::after {
 
 <ul class="menuList">
   <li class="menuItem">
+    <a href="https://buymeacoffee.com/wghelper" class="discordLink" target="_blank" rel="noopener noreferrer">
+      <div class="menuTitle">
+        <div class="menuLeft">
+          <img src="assets/images/icons/buymeacoffee.svg?v=20261106-1" alt="" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
+          <strong>Support this project</strong>
+        </div>
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+      </div>
+    </a>
+  </li>
+  <li class="menuItem">
     <a href="https://discord.gg/7TNu4fckUs" class="discordLink" target="_blank" rel="noopener noreferrer">
       <div class="menuTitle">
         <div class="menuLeft">
-          <img src="discordd.webp" alt="Discord" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
+          <img src="assets/images/ui/discordd.webp" alt="Discord" class="menuIcon" width="50" height="50" loading="lazy" decoding="async">
           <strong>Join the biggest WG community</strong>
         </div>
-        <img src="arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
+        <img src="assets/images/ui/arrow.webp" alt="" aria-hidden="true" class="menuArrow" width="46" height="45" loading="lazy" decoding="async">
       </div>
     </a>
   </li>
@@ -596,9 +612,28 @@ body::after {
   <p class="footer-about-link"><a href="about/">About War Game by Evil Grog Games</a></p>
 </footer>
 
-<script src="wg.js"></script>
+<style>
+.site-footer {
+  padding: 15px;
+  text-align: center;
+  font-size: 14px;
+  color: #8b8b8b;
+}
+.site-footer a {
+  color: inherit;
+  text-decoration: underline;
+}
+.footer-about-link {
+  margin-top: 10px !important;
+}
+</style>
+
+
+<script src="assets/js/wg.js"></script>
+
 
 <!-- Cloudflare Web Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "886bc7648ef5431582f04a89df2768bb"}'></script><!-- End Cloudflare Web Analytics -->
-
 </body>
 </html>
+
+
