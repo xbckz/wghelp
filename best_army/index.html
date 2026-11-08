@@ -257,6 +257,98 @@ body#home .tabsOuter {
     padding: 5px;
 }
 
+.owned-specials {
+    width: min(100%, 760px);
+    box-sizing: border-box;
+    margin: 0 0 2px;
+    padding: 10px 12px 12px;
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 5px;
+    background: rgba(0,0,0,0.2);
+    color: #fff;
+    font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+}
+
+.owned-specials legend {
+    padding: 0 6px;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.owned-specials-description {
+    margin: 0 0 10px;
+    color: #ddd;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.owned-specials-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+}
+
+.owned-special-row {
+    min-width: min(100%, 260px);
+    flex: 1 1 280px;
+    min-height: 68px;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.owned-special-image {
+    display: block;
+    width: 64px;
+    height: 64px;
+    flex: 0 0 64px;
+    object-fit: contain;
+}
+
+.owned-special-copy {
+    min-width: 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 14px;
+}
+
+.owned-special-copy span {
+    color: #ddd;
+    font-size: 12px;
+}
+
+.owned-special-switch {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    display: grid;
+    place-items: center;
+    padding: 3px;
+    border: 0;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+}
+
+.owned-special-switch img {
+    display: block;
+    width: 24px;
+    height: 24px;
+}
+
+.owned-special-switch:focus-visible {
+    outline: 2px solid #ffd28e;
+    outline-offset: 2px;
+}
+
+.owned-special-row:has(.owned-special-switch[aria-checked="true"]) .owned-special-copy strong {
+    color: #ffd28e;
+}
+
 .results-section {
     margin-top: 20px;
     padding: 15px;
@@ -481,6 +573,33 @@ body#home .tabsOuter {
       </select>
     </div>
 
+    <fieldset class="owned-specials">
+      <legend>I own</legend>
+      <p class="owned-specials-description">Include owned special-unit bonuses in the recommended army.</p>
+      <div class="owned-specials-grid">
+        <div class="owned-special-row">
+          <img class="owned-special-image" src="assets/images/items/2018.jpg" alt="Allied Rebels troop">
+          <span class="owned-special-copy">
+            <strong>Allied Rebels</strong>
+            <span>Reduce army upkeep by 5%</span>
+          </span>
+          <button class="owned-special-switch" id="owns-allied-rebels" type="button" role="switch" aria-checked="false" data-state="unowned" aria-label="I own Allied Rebels">
+            <img src="assets/images/ui/fail.png" alt="Not owned">
+          </button>
+        </div>
+        <div class="owned-special-row">
+          <img class="owned-special-image" src="assets/images/items/2015.jpg" alt="Radar Tank troop">
+          <span class="owned-special-copy">
+            <strong>Radar Tank</strong>
+            <span>Increase army attack by 5%</span>
+          </span>
+          <button class="owned-special-switch" id="owns-radar-tank" type="button" role="switch" aria-checked="false" data-state="unowned" aria-label="I own Radar Tank">
+            <img src="assets/images/ui/fail.png" alt="Not owned">
+          </button>
+        </div>
+      </div>
+    </fieldset>
+
     <div class="input-group">
       <button id="calculate" class="button">
         <span style="margin: 0; padding: 0;">Calculate Best Army</span>
@@ -509,7 +628,7 @@ body#home .tabsOuter {
 </div>
 
 <script src="assets/js/number-format.js"></script>
-<script src="assets/js/best_army.js?v=20260930-5"></script>
+<script src="assets/js/best_army.js?v=20261108-1"></script>
 <script src="assets/js/calculator-details.js?v=20260930-1"></script>
 
 </body>

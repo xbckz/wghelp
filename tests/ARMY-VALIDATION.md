@@ -11,10 +11,11 @@ and SciPy 1.18.1. All comparisons passed against the final calculator.
 | Large real armies | 70 | SciPy/HiGHS mixed integer optimization with an integer dual certificate |
 | Regular troop data | 97 | Attack, defense, upkeep, and unlock level checked against the three local guides |
 
-The 16 focused test groups also cover invalid inputs, fractional quantities,
+The 18 focused test groups also cover invalid inputs, fractional quantities,
 duplicate troops, dominance and ties, affordability boundaries, category
 filters, result totals, purchase-price completeness, background worker
-messages, worker failures, and matching script versions on both page routes.
+messages, worker failures, matching script versions on both page routes, and
+owned-special results against an independent slot-and-budget dynamic program.
 
 The real-data matrix covers every level from 1 to 350, attack/defense/balanced,
 all categories together and each category separately, zero budgets, large
@@ -112,8 +113,9 @@ The optimization argument applies to the current regular-troop data and rules:
 five active alliance members per level, ten infantry / three vehicles / one
 aircraft per active member, unlimited purchases, and one hourly upkeep budget.
 Balanced means maximizing attack plus defense. Purchase price is a reported
-total, not another budget constraint. War-loot units and account-specific
-bonuses/inventory are outside this calculator's model.
+total, not another budget constraint. War-loot troop selection and inventory
+remain outside the model. The calculator can apply the owned Allied Rebels
+(-5% upkeep) and Radar Tank (+5% attack) bonuses to the army calculation.
 
 Tests cannot prove that the game will never change. The data audit checks the
 repository's guides, not a live game account. Purchase prices are the existing

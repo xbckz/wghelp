@@ -102,6 +102,119 @@ test('balanced maximizes the sum of attack and defense', () => {
   assert.equal(result.army.find(unit => unit.type === 'Aircraft').name, 'Phantom');
 });
 
+function specialArmyOracle(playerLevel, upkeepBudget, allianceSize, optimizeType, ownedSpecials) {
+  const scale = 100;
+  const upkeepFactor = ownedSpecials.alliedRebels ? 95 : 100;
+  const attackFactor = ownedSpecials.radarTank ? 105 : 100;
+  const budget = upkeepBudget * scale;
+  const slots = calc.calculateSlotLimits(playerLevel, allianceSize);
+  let combined = new Map([[0, 0]]);
+
+  for (const type of calc.UNIT_TYPES) {
+    let category = new Map([[0, 0]]);
+    const units = calc.getAvailableUnits(playerLevel, type);
+    for (let slot = 0; slot < slots[type]; slot++) {
+      const next = new Map();
+      for (const [spent, value] of category) {
+        for (const unit of units) {
+          const cost = spent + unit.upkeep * upkeepFactor;
+          if (cost > budget) continue;
+          const attack = unit.attack * attackFactor;
+          const defense = unit.defense * scale;
+          const unitValue = optimizeType === 'attack'
+            ? attack
+            : optimizeType === 'defense'
+              ? defense
+              : attack + defense;
+          const totalValue = value + unitValue;
+          if (totalValue > (next.get(cost) ?? -1)) next.set(cost, totalValue);
+        }
+      }
+      category = next;
+    }
+
+    const nextCombined = new Map();
+    for (const [spent, value] of combined) {
+      for (const [categorySpent, categoryValue] of category) {
+        const cost = spent + categorySpent;
+        if (cost > budget) continue;
+        const totalValue = value + categoryValue;
+        if (totalValue > (nextCombined.get(cost) ?? -1)) nextCombined.set(cost, totalValue);
+      }
+    }
+    combined = nextCombined;
+  }
+
+  return Math.max(...combined.values());
+}
+
+test('owned-special army results match an independent slot-and-budget dynamic program', () => {
+  const bonusCombinations = [
+    { alliedRebels: false, radarTank: false },
+    { alliedRebels: true, radarTank: false },
+    { alliedRebels: false, radarTank: true },
+    { alliedRebels: true, radarTank: true }
+  ];
+  const playerLevel = 10;
+  const upkeepBudget = 1000;
+  const allianceSize = 1;
+
+  for (const ownedSpecials of bonusCombinations) {
+    for (const optimizeType of ['attack', 'defense', 'balanced']) {
+      const result = calc.calculateBestArmy(
+        playerLevel,
+        upkeepBudget,
+        allianceSize,
+        optimizeType,
+        'all',
+        ownedSpecials
+      );
+      const attackFactor = ownedSpecials.radarTank ? 105 : 100;
+      const upkeepFactor = ownedSpecials.alliedRebels ? 95 : 100;
+      const actualObjective = result.army.reduce((sum, unit) => {
+        const attack = unit.quantity * unit.attack * attackFactor;
+        const defense = unit.quantity * unit.defense * 100;
+        return sum + (optimizeType === 'attack'
+          ? attack
+          : optimizeType === 'defense'
+            ? defense
+            : attack + defense);
+      }, 0);
+      const rawAttack = result.army.reduce((sum, unit) => sum + unit.quantity * unit.attack, 0);
+      const rawUpkeep = result.army.reduce((sum, unit) => sum + unit.quantity * unit.upkeep, 0);
+
+      assert.equal(actualObjective, specialArmyOracle(
+        playerLevel,
+        upkeepBudget,
+        allianceSize,
+        optimizeType,
+        ownedSpecials
+      ));
+      assert.equal(result.totalAttack, rawAttack * attackFactor / 100);
+      assert.equal(result.totalUpkeep, rawUpkeep * upkeepFactor / 100);
+      assert.ok(result.totalUpkeep <= upkeepBudget);
+      assert.equal(result.attackBonusPercent, ownedSpecials.radarTank ? 5 : 0);
+      assert.equal(result.upkeepReductionPercent, ownedSpecials.alliedRebels ? 5 : 0);
+    }
+  }
+});
+
+test('Allied Rebels changes exact affordability at the 5% upkeep threshold', () => {
+  const withoutAlliedRebels = calc.calculateBestArmy(10, 39, 1, 'attack');
+  const withAlliedRebels = calc.calculateBestArmy(
+    10,
+    39,
+    1,
+    'attack',
+    'all',
+    { alliedRebels: true }
+  );
+  assert.equal(withoutAlliedRebels.army.some(unit => unit.name === 'Grenadier'), false);
+  assert.equal(withAlliedRebels.army.find(unit => unit.name === 'Grenadier')?.quantity, 1);
+  assert.equal(withAlliedRebels.totalUpkeep, 38);
+  assert.equal(withAlliedRebels.remainingUpkeep, 1);
+});
+
 test('dominance only removes strictly inferior troops within the same slot pool', () => {
   const items = [
     { type: 'infantry', cost: 10, value: 5 },
@@ -194,7 +307,8 @@ test('formatted inputs retain their exact values and level is capped at 350', ()
   harness.elements['player-level'].value = '351';
   harness.click();
   assert.deepEqual(JSON.parse(JSON.stringify(harness.workers[0].params)), {
-    playerLevel: 350, upkeepBudget: 1234567, allianceSize: 1800, optimizeType: 'attack', unitTypeFilter: 'all'
+    playerLevel: 350, upkeepBudget: 1234567, allianceSize: 1800, optimizeType: 'attack', unitTypeFilter: 'all',
+    ownedSpecials: { alliedRebels: false, radarTank: false }
   });
   assert.equal(harness.elements['player-level'].value, '350');
   assert.equal(harness.elements.calculate.disabled, true);

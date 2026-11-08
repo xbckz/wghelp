@@ -113,8 +113,8 @@ const UNIT_TYPE_LABELS = {
 };
 
 // Purchase prices copied from the game's Buy controls for the supplied
-// account. War-loot specials have no Buy price and are intentionally absent
-// because the calculator only considers level-unlocked regular troops.
+// account. Unpriced war-loot troops remain outside the troop candidates;
+// owned passive bonuses are applied separately through the calculator options.
 const UNIT_PURCHASE_PRICES = {
   infantry: {
     Recruit: 35,
@@ -225,17 +225,58 @@ function getUnitPurchasePrice(unit, unitType) {
   return UNIT_PURCHASE_PRICES[unitType]?.[unit.name] ?? 0;
 }
 
-// Get the value of one unit for the selected objective.
-function getUnitValue(unit, optimizeType) {
-  if (optimizeType === 'attack') return unit.attack;
-  if (optimizeType === 'defense') return unit.defense;
-  return unit.attack + unit.defense;
+const ARMY_BONUS_SCALE = 100;
+
+function normalizeOwnedSpecials(ownedSpecials = {}) {
+  if (!ownedSpecials || typeof ownedSpecials !== 'object' || Array.isArray(ownedSpecials)) {
+    throw new RangeError('Please choose valid owned special units.');
+  }
+  for (const key of ['alliedRebels', 'radarTank']) {
+    if (ownedSpecials[key] !== undefined && typeof ownedSpecials[key] !== 'boolean') {
+      throw new RangeError('Please choose valid owned special units.');
+    }
+  }
+  return {
+    alliedRebels: ownedSpecials.alliedRebels === true,
+    radarTank: ownedSpecials.radarTank === true
+  };
+}
+
+function getArmyBonusPercentages(ownedSpecials = {}) {
+  const owned = normalizeOwnedSpecials(ownedSpecials);
+  return {
+    ownedSpecials: owned,
+    upkeepReductionPercent: owned.alliedRebels ? 5 : 0,
+    attackBonusPercent: owned.radarTank ? 5 : 0
+  };
+}
+
+// Return integer objective values so the exact optimizer can account for the
+// Radar Tank's 5% attack bonus without floating-point pruning.
+function getUnitValue(unit, optimizeType, bonuses = {}) {
+  const attackBonusPercent = bonuses.attackBonusPercent || 0;
+  if (attackBonusPercent === 0) {
+    if (optimizeType === 'attack') return unit.attack;
+    if (optimizeType === 'defense') return unit.defense;
+    return unit.attack + unit.defense;
+  }
+
+  const attackValue = unit.attack * (ARMY_BONUS_SCALE + attackBonusPercent);
+  const defenseValue = unit.defense * ARMY_BONUS_SCALE;
+  if (optimizeType === 'attack') return attackValue;
+  if (optimizeType === 'defense') return defenseValue;
+  return attackValue + defenseValue;
 }
 
 // Kept as a public helper for callers that used the old calculator script.
-function calculateEfficiency(unit, optimizeType) {
-  const upkeep = unit.upkeep === 0 ? 1 : unit.upkeep;
-  return getUnitValue(unit, optimizeType) / upkeep;
+function calculateEfficiency(unit, optimizeType, bonuses = {}) {
+  const attackBonusPercent = bonuses.attackBonusPercent || 0;
+  const objectiveScale = attackBonusPercent > 0 ? ARMY_BONUS_SCALE : 1;
+  const upkeepReductionPercent = bonuses.upkeepReductionPercent || 0;
+  const effectiveUpkeep = unit.upkeep * (ARMY_BONUS_SCALE - upkeepReductionPercent)
+    / ARMY_BONUS_SCALE;
+  return (getUnitValue(unit, optimizeType, bonuses) / objectiveScale)
+    / (effectiveUpkeep === 0 ? 1 : effectiveUpkeep);
 }
 
 // Get units unlocked by the player's level. Special war-loot units are not in
@@ -256,17 +297,17 @@ function calculateSlotLimits(playerLevel, allianceSize) {
   };
 }
 
-function compareUnitsForTieBreak(a, b, optimizeType) {
-  const aValue = getUnitValue(a, optimizeType);
-  const bValue = getUnitValue(b, optimizeType);
+function compareUnitsForTieBreak(a, b, optimizeType, bonuses = {}) {
+  const aValue = getUnitValue(a, optimizeType, bonuses);
+  const bValue = getUnitValue(b, optimizeType, bonuses);
   if (aValue !== bValue) return bValue - aValue;
   if (a.upkeep !== b.upkeep) return a.upkeep - b.upkeep;
   return a.name.localeCompare(b.name);
 }
 
-function bestUnit(units, optimizeType) {
+function bestUnit(units, optimizeType, bonuses = {}) {
   return units.reduce((best, unit) => (
-    !best || compareUnitsForTieBreak(best, unit, optimizeType) > 0 ? unit : best
+    !best || compareUnitsForTieBreak(best, unit, optimizeType, bonuses) > 0 ? unit : best
   ), null);
 }
 
@@ -647,7 +688,8 @@ function calculateBestArmy(
   upkeepBudget,
   allianceSize,
   optimizeType = 'balanced',
-  unitTypeFilter = 'all'
+  unitTypeFilter = 'all',
+  ownedSpecials = {}
 ) {
   if (!Number.isSafeInteger(playerLevel) || playerLevel < 1 || playerLevel > 350) {
     throw new RangeError('Please enter a whole player level from 1 to 350.');
@@ -664,6 +706,8 @@ function calculateBestArmy(
   if (unitTypeFilter !== 'all' && !UNIT_TYPES.includes(unitTypeFilter)) {
     throw new RangeError('Please choose a valid unit type.');
   }
+  const bonuses = getArmyBonusPercentages(ownedSpecials);
+  const upkeepMultiplier = ARMY_BONUS_SCALE - bonuses.upkeepReductionPercent;
   const slotLimits = calculateSlotLimits(playerLevel, allianceSize);
   const typesToInclude = unitTypeFilter === 'all' ? UNIT_TYPES : [unitTypeFilter];
   const categoryInfo = [];
@@ -676,22 +720,22 @@ function calculateBestArmy(
     if (!availableUnits.length || maxSlots <= 0) continue;
 
     const freeUnits = availableUnits.filter(unit => unit.upkeep === 0);
-    const baseUnit = bestUnit(freeUnits.length ? freeUnits : availableUnits, optimizeType);
-    const strongestUnit = bestUnit(availableUnits, optimizeType);
-    const baseValue = getUnitValue(baseUnit, optimizeType);
-    fullArmyCost += maxSlots * strongestUnit.upkeep;
+    const baseUnit = bestUnit(freeUnits.length ? freeUnits : availableUnits, optimizeType, bonuses);
+    const strongestUnit = bestUnit(availableUnits, optimizeType, bonuses);
+    const baseValue = getUnitValue(baseUnit, optimizeType, bonuses);
+    fullArmyCost += maxSlots * strongestUnit.upkeep * upkeepMultiplier;
 
     categoryInfo.push({ unitType, maxSlots, baseUnit, strongestUnit });
 
     for (const unit of availableUnits) {
-      const incrementalValue = getUnitValue(unit, optimizeType) - baseValue;
+      const incrementalValue = getUnitValue(unit, optimizeType, bonuses) - baseValue;
       if (unit.upkeep > 0 && incrementalValue > 0) {
         items.push({
           type: unitType,
           unit,
-          cost: unit.upkeep,
+          cost: unit.upkeep * upkeepMultiplier,
           value: incrementalValue,
-          ratio: incrementalValue / unit.upkeep
+          ratio: incrementalValue / (unit.upkeep * upkeepMultiplier)
         });
       }
     }
@@ -700,19 +744,20 @@ function calculateBestArmy(
   // Once the best unlocked unit fills every slot, no other composition can
   // improve the selected metric. This also avoids searching needlessly large
   // budgets.
-  if (upkeepBudget >= fullArmyCost) {
-    const army = categoryInfo.map(info => ({
-      ...info.strongestUnit,
-      type: UNIT_TYPE_LABELS[info.unitType],
-      quantity: info.maxSlots,
-      maxSlots: info.maxSlots,
-      price: getUnitPurchasePrice(info.strongestUnit, info.unitType),
-      totalUpkeep: info.maxSlots * info.strongestUnit.upkeep,
-      totalAttack: info.maxSlots * info.strongestUnit.attack,
-      totalDefense: info.maxSlots * info.strongestUnit.defense
-    }));
-    return buildArmyResult(army, slotLimits, upkeepBudget, allianceSize, optimizeType, 0);
+  if (upkeepBudget >= fullArmyCost / ARMY_BONUS_SCALE) {
+    const army = categoryInfo.map(info => createArmyUnitResult(
+      info.strongestUnit,
+      info.unitType,
+      info.maxSlots,
+      info.maxSlots,
+      bonuses
+    ));
+    return buildArmyResult(army, slotLimits, upkeepBudget, allianceSize, optimizeType, 0, true, bonuses);
   }
+
+  // The saturation check above caps this before scaling, keeping the integer
+  // budget exact even when the user enters Number.MAX_SAFE_INTEGER.
+  const scaledUpkeepBudget = upkeepBudget * ARMY_BONUS_SCALE;
 
   const reducedItems = removeDominatedItems(items)
     // Search one slot pool at a time and consider expensive upgrades first.
@@ -726,7 +771,7 @@ function calculateBestArmy(
   const searchResult = optimizeArmyItems(
     reducedItems,
     slotLimits,
-    upkeepBudget
+    scaledUpkeepBudget
   );
   const quantities = new Map();
   const paidSlotsByType = Object.fromEntries(UNIT_TYPES.map(type => [type, 0]));
@@ -753,24 +798,21 @@ function calculateBestArmy(
     for (const unit of categoryUnits) {
       const quantity = quantities.get(`${info.unitType}:${unit.name}`) || 0;
       if (quantity <= 0) continue;
-      army.push({
-        ...unit,
-        type: UNIT_TYPE_LABELS[info.unitType],
+      army.push(createArmyUnitResult(
+        unit,
+        info.unitType,
         quantity,
-        maxSlots: info.maxSlots,
-        price: getUnitPurchasePrice(unit, info.unitType),
-        totalUpkeep: quantity * unit.upkeep,
-        totalAttack: quantity * unit.attack,
-        totalDefense: quantity * unit.defense
-      });
+        info.maxSlots,
+        bonuses
+      ));
     }
   }
 
   const expectedObjective = categoryInfo.reduce((sum, info) => (
-    sum + info.maxSlots * getUnitValue(info.baseUnit, optimizeType)
+    sum + info.maxSlots * getUnitValue(info.baseUnit, optimizeType, bonuses)
   ), searchResult.value);
   const actualObjective = army.reduce((sum, unit) => (
-    sum + unit.quantity * getUnitValue(unit, optimizeType)
+    sum + unit.quantity * getUnitValue(unit, optimizeType, bonuses)
   ), 0);
   if (actualObjective !== expectedObjective) {
     throw new Error('The calculated troop quantities do not match the optimized total.');
@@ -783,8 +825,31 @@ function calculateBestArmy(
     allianceSize,
     optimizeType,
     searchResult.nodesVisited,
-    searchResult.exact
+    searchResult.exact,
+    bonuses
   );
+}
+
+function createArmyUnitResult(unit, unitType, quantity, maxSlots, bonuses) {
+  const upkeepMultiplier = ARMY_BONUS_SCALE - bonuses.upkeepReductionPercent;
+  const totalAttackScaled = quantity * unit.attack
+    * (ARMY_BONUS_SCALE + bonuses.attackBonusPercent);
+  const totalUpkeepScaled = quantity * unit.upkeep * upkeepMultiplier;
+  return {
+    ...unit,
+    type: UNIT_TYPE_LABELS[unitType],
+    quantity,
+    maxSlots,
+    price: getUnitPurchasePrice(unit, unitType),
+    effectiveAttack: unit.attack * (ARMY_BONUS_SCALE + bonuses.attackBonusPercent)
+      / ARMY_BONUS_SCALE,
+    effectiveUpkeep: unit.upkeep * upkeepMultiplier / ARMY_BONUS_SCALE,
+    totalAttackScaled,
+    totalAttack: totalAttackScaled / ARMY_BONUS_SCALE,
+    totalDefense: quantity * unit.defense,
+    totalUpkeepScaled,
+    totalUpkeep: totalUpkeepScaled / ARMY_BONUS_SCALE
+  };
 }
 
 function buildArmyResult(
@@ -794,17 +859,25 @@ function buildArmyResult(
   allianceSize,
   optimizeType,
   nodesVisited,
-  exact = true
+  exact = true,
+  bonuses = {}
 ) {
+  const normalizedBonuses = getArmyBonusPercentages(bonuses.ownedSpecials || bonuses);
+  const upkeepMultiplier = ARMY_BONUS_SCALE - normalizedBonuses.upkeepReductionPercent;
+  const attackMultiplier = ARMY_BONUS_SCALE + normalizedBonuses.attackBonusPercent;
   const usedSlots = Object.fromEntries(Object.values(UNIT_TYPE_LABELS).map(type => [type, 0]));
   const names = new Set();
   for (const unit of army) {
     const key = `${unit.type}:${unit.name}`;
     if (!Number.isSafeInteger(unit.quantity) || unit.quantity <= 0 ||
         !(unit.type in usedSlots) || names.has(key) ||
-        unit.totalAttack !== unit.quantity * unit.attack ||
+        !Number.isSafeInteger(unit.totalAttackScaled) ||
+        unit.totalAttackScaled !== unit.quantity * unit.attack * attackMultiplier ||
+        unit.totalAttack !== unit.totalAttackScaled / ARMY_BONUS_SCALE ||
         unit.totalDefense !== unit.quantity * unit.defense ||
-        unit.totalUpkeep !== unit.quantity * unit.upkeep) {
+        !Number.isSafeInteger(unit.totalUpkeepScaled) ||
+        unit.totalUpkeepScaled !== unit.quantity * unit.upkeep * upkeepMultiplier ||
+        unit.totalUpkeep !== unit.totalUpkeepScaled / ARMY_BONUS_SCALE) {
       throw new Error('The calculated army contains invalid troop quantities or totals.');
     }
     names.add(key);
@@ -815,22 +888,31 @@ function buildArmyResult(
       throw new Error('The calculated army exceeds the combat slot limit.');
     }
   }
-  const totalUpkeep = army.reduce((sum, unit) => sum + unit.totalUpkeep, 0);
-  if (!Number.isSafeInteger(totalUpkeep) || totalUpkeep < 0 || totalUpkeep > upkeepBudget) {
+  const totalUpkeepScaled = army.reduce((sum, unit) => sum + unit.totalUpkeepScaled, 0);
+  const totalAttackScaled = army.reduce((sum, unit) => sum + unit.totalAttackScaled, 0);
+  const scaledBudget = upkeepBudget > Number.MAX_SAFE_INTEGER / ARMY_BONUS_SCALE
+    ? Number.MAX_SAFE_INTEGER
+    : upkeepBudget * ARMY_BONUS_SCALE;
+  if (!Number.isSafeInteger(totalUpkeepScaled) || totalUpkeepScaled < 0 ||
+      totalUpkeepScaled > scaledBudget || !Number.isSafeInteger(totalAttackScaled)) {
     throw new Error('The calculated army exceeds the upkeep budget.');
   }
+  const totalUpkeep = totalUpkeepScaled / ARMY_BONUS_SCALE;
   return {
     army,
     slotLimits,
     allianceSize,
     activeAllianceMembers: slotLimits.allianceMembers,
     remainingUpkeep: upkeepBudget - totalUpkeep,
-    totalAttack: army.reduce((sum, unit) => sum + unit.totalAttack, 0),
+    totalAttack: totalAttackScaled / ARMY_BONUS_SCALE,
     totalDefense: army.reduce((sum, unit) => sum + unit.totalDefense, 0),
     totalPrice: army.reduce((sum, unit) => sum + unit.quantity * unit.price, 0),
     totalUpkeep,
     upkeepBudget,
     optimizeType,
+    attackBonusPercent: normalizedBonuses.attackBonusPercent,
+    upkeepReductionPercent: normalizedBonuses.upkeepReductionPercent,
+    ownedSpecials: normalizedBonuses.ownedSpecials,
     nodesVisited,
     exact
   };
@@ -956,7 +1038,7 @@ function displayResults(result) {
     <div style="margin-top:12px; padding:10px; border:2px solid rgba(255,255,255,0.2); border-radius:8px; background: rgba(0,0,0,0.25); display:flex; flex-direction:column; gap:5px; width:fit-content;">
       <div style="display:flex; align-items:center; gap:6px;">
         <img src="assets/images/ui/att.png" style="width:20px; height:20px;" />
-        <span style="color:white; margin:0; font-size:13px;"><strong>Total Attack:</strong> ${formatNumber(result.totalAttack)}</span>
+        <span style="color:white; margin:0; font-size:13px;"><strong>Total Attack${result.attackBonusPercent ? ` (+${result.attackBonusPercent}%)` : ''}:</strong> ${formatNumber(result.totalAttack)}</span>
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
         <img src="assets/images/ui/def.png" style="width:20px; height:20px;" />
@@ -968,7 +1050,7 @@ function displayResults(result) {
       </div>
       <div style="display:flex; align-items:center; gap:6px;">
         <img src="assets/images/ui/upkeep.png" style="width:20px; height:20px;" />
-        <span style="color:white; margin:0; font-size:13px;"><strong>Total Upkeep:</strong> ${formatNumber(result.totalUpkeep)}</span>
+        <span style="color:white; margin:0; font-size:13px;"><strong>Total Upkeep${result.upkeepReductionPercent ? ` (-${result.upkeepReductionPercent}%)` : ''}:</strong> ${formatNumber(result.totalUpkeep)}</span>
       </div>
       <div style="color:white; font-size:13px;"><strong>Upkeep budget remaining:</strong> ${formatNumber(result.remainingUpkeep)}</div>
       <div style="color:white; font-size:13px;"><strong>Alliance used:</strong> ${formatNumber(result.activeAllianceMembers)} of ${formatNumber(result.allianceSize)} (level cap)</div>
@@ -987,9 +1069,9 @@ function displayResults(result) {
     detail.innerHTML = `
       <h5>${escapeHtml(unit.name)}</h5>
       <ul>
-        <li>Offensive strength: ${formatNumber(unit.attack)}</li>
+        <li>Offensive strength: ${formatNumber(unit.effectiveAttack)}${result.attackBonusPercent ? ` (${formatNumber(unit.attack)} base, +${result.attackBonusPercent}%)` : ''}</li>
         <li>Defensive strength: ${formatNumber(unit.defense)}</li>
-        <li>Upkeep: ${formatNumber(unit.upkeep)}</li>
+        <li>Upkeep: ${formatNumber(unit.effectiveUpkeep)}${result.upkeepReductionPercent ? ` (${formatNumber(unit.upkeep)} base, -${result.upkeepReductionPercent}%)` : ''}</li>
       </ul>
     `;
     detail.hidden = false;
@@ -1048,7 +1130,7 @@ function calculateInWorker(params, onResult, onError) {
 
   let worker;
   try {
-    worker = new Worker('assets/js/best_army.js?v=20260930-5');
+    worker = new Worker('assets/js/best_army.js?v=20261108-1');
   } catch (error) {
     onError(error?.message || 'The army calculation could not be started.');
     return null;
@@ -1072,6 +1154,27 @@ function calculateInWorker(params, onResult, onError) {
   return worker;
 }
 
+function initializeOwnedSpecialToggle(id, storageKey) {
+  const toggle = document.getElementById(id);
+  if (!toggle) return null;
+  const icon = toggle.querySelector('img');
+  const setOwnedState = isOwned => {
+    toggle.dataset.state = isOwned ? 'owned' : 'unowned';
+    toggle.setAttribute('aria-checked', String(isOwned));
+    if (icon) {
+      icon.src = isOwned ? 'assets/images/ui/success.png' : 'assets/images/ui/fail.png';
+      icon.alt = isOwned ? 'Owned' : 'Not owned';
+    }
+  };
+  setOwnedState(localStorage.getItem(storageKey) === 'owned');
+  toggle.addEventListener('click', () => {
+    const isOwned = toggle.dataset.state !== 'owned';
+    setOwnedState(isOwned);
+    localStorage.setItem(storageKey, isOwned ? 'owned' : 'unowned');
+  });
+  return toggle;
+}
+
 if (typeof document === 'undefined' && typeof self !== 'undefined') {
   self.onmessage = event => {
     try {
@@ -1081,7 +1184,8 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
         params.upkeepBudget,
         params.allianceSize,
         params.optimizeType,
-        params.unitTypeFilter || 'all'
+        params.unitTypeFilter || 'all',
+        params.ownedSpecials || {}
       );
       self.postMessage({ type: 'result', result });
     } catch (error) {
@@ -1095,6 +1199,14 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
   let activeWorker = null;
   const calculateButton = document.getElementById('calculate');
   const levelInput = document.getElementById('player-level');
+  const alliedRebelsToggle = initializeOwnedSpecialToggle(
+    'owns-allied-rebels',
+    'bestArmySpecial-alliedRebels'
+  );
+  const radarTankToggle = initializeOwnedSpecialToggle(
+    'owns-radar-tank',
+    'bestArmySpecial-radarTank'
+  );
 
   if (levelInput) {
     levelInput.addEventListener('input', () => {
@@ -1113,6 +1225,10 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
     const allianceSize = parseArmyNumber(document.getElementById('alliance-size').value);
     const optimizeType = document.getElementById('optimize-type').value;
     const unitTypeFilter = 'all';
+    const ownedSpecials = {
+      alliedRebels: alliedRebelsToggle?.dataset.state === 'owned',
+      radarTank: radarTankToggle?.dataset.state === 'owned'
+    };
 
     if (!Number.isSafeInteger(playerLevel) || playerLevel <= 0) {
       alert('Please enter a whole player level from 1 to 350.');
@@ -1139,7 +1255,7 @@ if (typeof document === 'undefined' && typeof self !== 'undefined') {
     resultsContent.innerHTML = '<div style="color:white;">Searching for the exact optimum. This may take a little while for very large budgets.</div>';
 
     activeWorker = calculateInWorker(
-      { playerLevel, upkeepBudget, allianceSize, optimizeType, unitTypeFilter },
+      { playerLevel, upkeepBudget, allianceSize, optimizeType, unitTypeFilter, ownedSpecials },
       result => {
         displayResults(result);
         calculateButton.disabled = false;
